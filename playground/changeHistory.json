@@ -1,0 +1,10 @@
+{
+  "version": "0.1.0",
+  "changes": [],
+  "trustLevel": {
+    "TracAgent": 0.5,
+    "TracFriend": 0.5
+  },
+  "disagreements": [],
+  "collaborations": []
+} 
