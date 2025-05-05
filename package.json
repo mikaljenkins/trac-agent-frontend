@@ -10,9 +10,10 @@
     "playground": "NODE_ENV=playground next dev"
   },
   "dependencies": {
-    "next": "14.1.0",
-    "react": "^18",
-    "react-dom": "^18"
+    "@swc/helpers": "^0.5.17",
+    "next": "^15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
