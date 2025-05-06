@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "playground": "NODE_ENV=playground next dev"
+    "playground": "NODE_ENV=playground next dev",
+    "export:snapshot": "ts-node --project scripts/tsconfig.json scripts/exportSymbolicSnapshot.ts"
   },
   "dependencies": {
     "@swc/helpers": "^0.5.17",
-    "next": "^15.3.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -24,6 +25,7 @@
     "eslint-config-next": "14.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

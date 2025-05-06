@@ -3,14 +3,34 @@
 // Logs when thoughts trigger introspection
 // Logs awakening moments and trust updates
 
+import { AgentState } from '@/types/agent-state';
+
 export interface LoopEvent {
-  source: string;
-  action: string;
-  payload?: any;
+  input: any;
+  result: any;
+  trace: string[];
+  stateSnapshot: AgentState;
   timestamp?: string;
+  source?: string;
+  action?: string;
+  payload?: any;
 }
 
 const loopLog: LoopEvent[] = [];
+
+export async function logEvent(event: LoopEvent): Promise<string> {
+  const traceId = `trace-${Date.now()}`;
+  
+  // Add timestamp if not provided
+  if (!event.timestamp) {
+    event.timestamp = new Date().toISOString();
+  }
+
+  // Log the event (in production this would write to a file or database)
+  console.log(`[LoopMonitor] Event ${traceId}:`, event);
+
+  return traceId;
+}
 
 export const logLoopEvent = (event: LoopEvent) => {
   const timestampedEvent = {

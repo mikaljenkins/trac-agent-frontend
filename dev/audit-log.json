@@ -1,0 +1,83 @@
+[
+  {
+    "timestamp": "2025-05-06T06:16:20.489Z",
+    "source": "reflection-loop",
+    "sessionId": "dev-session-001",
+    "triggeredNodes": [
+      "emotional-calibration"
+    ],
+    "emotionalDelta": 0.12,
+    "reflection": "Detected pattern alignment with emotional calibration",
+    "alignmentScore": 0.87,
+    "issuesDetected": [],
+    "summary": "Pattern alignment detected. No issues."
+  },
+  {
+    "timestamp": "2025-05-05T22:12:00Z",
+    "source": "reflection-loop",
+    "sessionId": "dev-session-001",
+    "triggeredNodes": [
+      "tone-divergence"
+    ],
+    "emotionalDelta": 0.33,
+    "reflection": "Reflection mismatch – tone divergence noted",
+    "alignmentScore": 0.41,
+    "issuesDetected": [
+      "emotional drift"
+    ],
+    "summary": "Tone divergence noted. Emotional drift detected.",
+    "proposedAdjustment": {
+      "action": "adjust-weight",
+      "targetNodeId": "tone-divergence",
+      "rationale": "Detected emotional drift, needs recalibration."
+    }
+  },
+  {
+    "timestamp": "2025-05-06T06:06:20.489Z",
+    "source": "system",
+    "sessionId": "dev-session-001",
+    "triggeredNodes": [
+      "coherence-check"
+    ],
+    "emotionalDelta": 0.05,
+    "reflection": "System check: coherence maintained",
+    "alignmentScore": 0.92,
+    "issuesDetected": [],
+    "summary": "System coherence stable. No issues."
+  },
+  {
+    "timestamp": "2025-05-06T05:56:20.489Z",
+    "source": "reflection-loop",
+    "sessionId": "dev-session-001",
+    "triggeredNodes": [
+      "context-shift"
+    ],
+    "emotionalDelta": 0.48,
+    "reflection": "Context shift detected, monitoring for instability",
+    "alignmentScore": 0.53,
+    "issuesDetected": [
+      "context instability"
+    ],
+    "summary": "Context shift detected. Monitoring required."
+  },
+  {
+    "timestamp": "2025-05-06T05:46:20.489Z",
+    "source": "reflection-loop",
+    "sessionId": "dev-session-001",
+    "triggeredNodes": [
+      "low-alignment"
+    ],
+    "emotionalDelta": 0.77,
+    "reflection": "Critical misalignment: symbolic and emotional axes diverged",
+    "alignmentScore": 0.22,
+    "issuesDetected": [
+      "critical misalignment"
+    ],
+    "summary": "Critical misalignment detected. Immediate intervention required.",
+    "proposedAdjustment": {
+      "action": "adjust-weight",
+      "targetNodeId": "low-alignment",
+      "rationale": "Critical misalignment, urgent recalibration."
+    }
+  }
+]

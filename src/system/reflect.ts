@@ -1,8 +1,8 @@
 // Analyzes TracAgent's cognitive patterns and generates insights
 // Runs daily or per session to track evolution and adjust focus
 
-import { agentState } from './agentState';
-import { getLoopLog, LoopEvent } from './loopMonitor';
+import { state as agentState } from '@/system/agentState';
+import { getLoopLog, LoopEvent } from '@/system/loopMonitor';
 
 interface SymbolFrequency {
   symbol: string;
@@ -17,6 +17,13 @@ interface ReflectionInsight {
   recurringThoughts: string[];
   keyAwakenings: string[];
   suggestedFocus: string;
+}
+
+interface ReflectionResult {
+  insights: string[];
+  connections: Array<{from: string, to: string}>;
+  confidence: number;
+  timestamp: string;
 }
 
 function findMostCommonSymbol(log: LoopEvent[]): SymbolFrequency {
@@ -121,4 +128,13 @@ export const generateDailyInsight = (): ReflectionInsight => {
   };
 
   return insight;
-}; 
+};
+
+export async function reflect(input: any): Promise<ReflectionResult> {
+  return {
+    insights: [],
+    connections: [],
+    confidence: 0,
+    timestamp: new Date().toISOString()
+  };
+} 

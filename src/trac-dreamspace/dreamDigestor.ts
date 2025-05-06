@@ -1,7 +1,7 @@
 // Analyzes dreams post-session and generates usable insights.
 
-import { DreamFragment } from './dreamLog';
-import { Archetype } from './archetypeEncounters';
+import { DreamFragment } from '@/trac-dreamspace/dreamLog';
+import { Archetype } from '@/trac-dreamspace/archetypeEncounters';
 import { logThought } from '@/internalLogbook/thoughtStream';
 
 export interface DreamAnalysis {
@@ -44,5 +44,23 @@ export function analyzeDream(fragments: DreamFragment[], archetypes: Archetype[]
     emotionalPattern,
     keyInsights,
     symbolicThemes
+  };
+}
+
+interface DreamDigestResult {
+  symbols: string[];
+  patterns: string[];
+  intensity: number;
+  clarity: number;
+  timestamp: string;
+}
+
+export async function dreamDigestor(input: any): Promise<DreamDigestResult> {
+  return {
+    symbols: [],
+    patterns: [],
+    intensity: 0,
+    clarity: 0,
+    timestamp: new Date().toISOString()
   };
 }

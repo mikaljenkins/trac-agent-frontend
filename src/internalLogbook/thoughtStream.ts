@@ -1,7 +1,7 @@
 // Logs raw internal reflections TracAgent does not immediately share.
 // Includes uncertainties, hypotheses, or mental doodles.
 
-import { generatePrompt } from './introspectivePrompts';
+import { generatePrompt } from '@/internalLogbook/introspectivePrompts';
 
 export interface Thought {
   id: string;
@@ -12,7 +12,7 @@ export interface Thought {
   relatedThoughts: string[]; // IDs of related thoughts
 }
 
-const thoughtStream: Thought[] = [];
+const thoughts: Thought[] = [];
 
 export function logThought(
   content: string,
@@ -29,7 +29,7 @@ export function logThought(
     relatedThoughts
   };
 
-  thoughtStream.push(thought);
+  thoughts.push(thought);
 
   // Trigger introspective prompts based on thought characteristics
   if (type === 'uncertainty' && confidence < 0.3) {
@@ -48,5 +48,21 @@ export function logThought(
 }
 
 export function getThoughtsByType(type: Thought['type']): Thought[] {
-  return thoughtStream.filter(thought => thought.type === type);
+  return thoughts.filter(thought => thought.type === type);
+}
+
+interface ThoughtStreamResult {
+  thoughts: string[];
+  connections: Array<{from: string, to: string}>;
+  intensity: number;
+  timestamp: string;
+}
+
+export async function processThoughts(input: any): Promise<ThoughtStreamResult> {
+  return {
+    thoughts: [],
+    connections: [],
+    intensity: 0,
+    timestamp: new Date().toISOString()
+  };
 }
