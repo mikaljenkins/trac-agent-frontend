@@ -4,6 +4,9 @@
 // Logs awakening moments and trust updates
 
 import { AgentState } from '@/system/agentState';
+import { analyzeSymbolicHealth } from '../../frontend/ai-core/symbolicPlotTracker';
+import { predictNextArchetype } from '../../frontend/ai-core/archetypePredictor';
+import type { SymbolicMemoryNode } from '../../frontend/ai-core/symbolicPlotTracker';
 
 export interface LoopEvent {
   input: any;
@@ -72,4 +75,42 @@ export interface SessionState {
 export function detectReasoningLoopAnomalies(session: SessionState): ReasoningAlertLevel {
   // TODO: Implement actual anomaly detection logic
   return 'low';
+}
+
+/**
+ * Call this at the end of each symbolic cycle to update symbolic health and archetype prediction.
+ * @param agentState The current agent state
+ * @param symbols The current array of SymbolicMemoryNode
+ * @param recentMutations The recent SymbolicMutation[]
+ */
+export function updateSymbolicForecast(agentState: AgentState, symbols: SymbolicMemoryNode[], recentMutations: any[]) {
+  // 1. Analyze symbolic health
+  const health = analyzeSymbolicHealth(symbols);
+  agentState.lastSymbolicHealth = health;
+  logLoopEvent({
+    input: null,
+    result: health,
+    trace: [],
+    stateSnapshot: agentState,
+    timestamp: new Date().toISOString(),
+    source: 'symbolicPlotTracker',
+    action: 'symbolicHealthSnapshot',
+    payload: health
+  });
+
+  // 2. Predict next archetype
+  const predicted = predictNextArchetype(agentState, recentMutations) as import('../../frontend/ai-core/archetypes/archetypeRouter').ArchetypeName;
+  agentState.predictedArchetype = predicted;
+  logLoopEvent({
+    input: null,
+    result: predicted,
+    trace: [],
+    stateSnapshot: agentState,
+    timestamp: new Date().toISOString(),
+    source: 'archetypePredictor',
+    action: 'archetypePrediction',
+    payload: predicted
+  });
+
+  // TODO: UI hook — display predictedArchetype and entropy in Trace Viewer UI panel
 } 

@@ -2,6 +2,8 @@
 // Accessible across modules for context
 
 import { AgentState as BaseAgentState } from '@/types/agent-state';
+import type { ArchetypeName } from '../../frontend/ai-core/archetypes/archetypeRouter';
+import type { SymbolicHealthSnapshot } from '../../frontend/ai-core/symbolicPlotTracker';
 
 interface AgentStateDelta {
   lastAgent?: string;
@@ -29,6 +31,8 @@ export interface AgentState extends BaseAgentState {
   reasoningAlertLevel?: 'low' | 'medium' | 'high';
   activeArchetype?: 'Flame' | 'Mirror' | 'Oracle' | null;
   archetypeTriggerLog?: ArchetypeTrigger[];
+  predictedArchetype?: ArchetypeName;
+  lastSymbolicHealth?: SymbolicHealthSnapshot;
 }
 
 export interface ArchetypeTrigger {
