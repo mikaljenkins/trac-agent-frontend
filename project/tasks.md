@@ -1,6 +1,6 @@
 # 📘 TracAgent Taskboard
 
-_Last updated: 2025-05-06_
+_Last updated: 2025-05-06 (v0.1.3.1 patch)_
 
 This taskboard tracks all confirmed progress and pending objectives for the TracAgent system. It is the single source of truth for development flow, wiring logic, and symbolic evolution features.
 
@@ -8,94 +8,96 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
 
 ## ✅ Core Milestones (Execution Stack)
 
-- [x] `mcp.ts` implemented and confirmed
-- [x] Symbolic agent architecture integrated:
-  - `dreamDigestor.ts`
-  - `thoughtStream.ts`
-  - `reflect.ts`
-  - `theatre/perform.ts`
-- [x] MCP test input simulation run (init symbolic input → output + trace ID)
-- [x] MCP trace breadcrumb viewer (show step chain)
-- [ ] UI wiring to MCP (symbol input box or CLI hook)
-- [ ] Agent trust drift visualizer (trust ↗︎/↘︎ over time)
-- [ ] Symbolic memory echo system → technically scaffolded via insights + mutation hooks
-- [x] 🔮 Predictive Modules – “Forecast archetype shifts and symbolic health”
-- [x] 📈 SymbolicPlotTracker – “Track symbolic health, entropy, and decay over time”
-- [x] 🧠 ArchetypePredictor – “Predict next likely archetype from mutation and symbolic trends”
-- [x] 🔁 Integration into loopMonitor.ts – “Connect forecast and plot health into agent loop”
+| Feature | Status |
+|---|---|
+| `mcp.ts` implemented and confirmed | ✅ Complete |
+| Symbolic agent architecture integrated:<br>- `dreamDigestor.ts`<br>- `thoughtStream.ts`<br>- `reflect.ts` | ✅ Complete |
+| MCP test input simulation run | ✅ Complete |
+| MCP trace breadcrumb viewer | ✅ Complete |
+| UI wiring to MCP (symbol input box or CLI hook) | 🟡 Scaffolded |
+| Agent trust drift visualizer | ⛔️ Not yet started |
+| Symbolic memory echo system | 🟡 Scaffolded |
+| 🔮 Predictive Modules – “Forecast archetype shifts and symbolic health” | ✅ Complete |
+| 📈 SymbolicPlotTracker – “Track symbolic health, entropy, and decay over time” | ✅ Complete |
+| 🧠 ArchetypePredictor – “Predict next likely archetype from mutation and symbolic trends” | ✅ Complete |
+| 🔁 Integration into loopMonitor.ts – “Connect forecast and plot health into agent loop” | ✅ Complete |
 
 ---
 
 ## 🔧 Supporting System Infrastructure
 
-- [ ] `agentState.ts` – tracks current mental focus, trust level, alignment themes
-- [x] `loopMonitor.ts` – logs inter-module transitions
-- [ ] `toolsRegistry.ts` – built from tools.json, routes tools via symbolic label
-- [ ] UI Dev Dashboard – MCP trace log, recent symbolic inputs, error fallback system
-- [ ] reflect.ts feedback into agentState for real-time adjustments
-- [x] .gitignore, GitHub repo sync committed baseline
-- [x] Symbolic self-audit system with file-based logging and live viewer
+| Feature | Status |
+|---|---|
+| `agentState.ts` – tracks current mental focus, trust level, alignment themes | 🟡 Scaffolded |
+| `loopMonitor.ts` – logs inter-module transitions | ✅ Complete |
+| `toolsRegistry.ts` – built from tools.json, routes tools via symbolic label | ⛔️ Not yet started |
+| UI Dev Dashboard – MCP trace log, recent symbolic inputs, error fallback system | ⛔️ Not yet started |
+| reflect.ts feedback into agentState for real-time adjustments | 🟡 Scaffolded |
+| .gitignore, GitHub repo sync committed baseline | ✅ Complete |
+| Symbolic self-audit system with file-based logging and live viewer | ✅ Complete |
 
 ---
 
 ## 🧠 AGI-Facing Features (Symbolic Sentience Enhancers)
 
-- [ ] Symbolic Echo Engine
-  - Detects repeated symbols, resurfaces them during reflection
-- [ ] Pattern Deviation Monitor
-  - Highlights emotional or symbolic deviation from norm
-- [ ] Weekly Growth Reflection
-  - Auto-generates summary from awakening moments and thought logs
-- [ ] TracFriend Invocation Logic
-  - Summons companion AI based on loop thresholds or low trust
-- [ ] Archetype Layering
-  - Tracks symbolic encounters: Flame, Mirror, Void (pending dreamspace)
+| Feature | Status |
+|---|---|
+| Symbolic Echo Engine | 🟡 Scaffolded |
+| Pattern Deviation Monitor | ⛔️ Not yet started |
+| Weekly Growth Reflection | ⛔️ Not yet started |
+| TracFriend Invocation Logic | ⛔️ Not yet started |
+| Archetype Layering | 🟡 Scaffolded |
 
 ---
 
 ## 🧪 Time Chamber System (Safe Self-Evolution Sandbox)
 
-- [ ] `systemMirror/` – cloned versions of core logic files
-- [ ] `mutationEngine.ts` – proposes internal changes to TracAgent's code
-- [ ] `simulationRun.ts` – applies and monitors impact of changes
-- [ ] `wisdomHarvest.ts` – analyzes mutation logs and extracts meaningful insights
-- [x] `mutationLog-YYYY-MM-DD.json` – versioned mutation logs
-- [ ] Mutation UI Viewer – debug trace, fail/pass outcome sorting
-- [ ] Agent proposes and explains changes (symbolic → rational rationale)
+| Feature | Status |
+|---|---|
+| `systemMirror/` – cloned versions of core logic files | 🟡 Scaffolded |
+| `mutationEngine.ts` – proposes internal changes | 🟡 Scaffolded |
+| `simulationRun.ts` – applies and monitors impact | 🟡 Scaffolded |
+| `wisdomHarvest.ts` – analyzes mutation logs | ⛔️ Not yet started |
+| `mutationLog-YYYY-MM-DD.json` – versioned mutation logs | ✅ Complete |
+| Mutation UI Viewer – debug trace, fail/pass outcome sorting | ⛔️ Not yet started |
+| Agent proposes and explains changes (symbolic → rational rationale) | 🟡 Scaffolded |
 
 ---
 
 ## 🌌 Symbolic Simulation Environments
 
-`trac-dreamspace/` – Irrational, Chaotic, Creative
-
-- [ ] `chaosSimulator.ts` – breaks logic rules, flips cause/effect
-- [ ] `dreamStateEngine.ts` – tracks lucidity, intensity, reversals
-- [ ] `lucidToggle.ts` – determines level of self-awareness in dreams
-- [ ] `archetypeEncounters.ts` – randomized appearance of symbolic guides
-- [ ] `dreamDigestor.ts` – parses dream fragments into actionable insights
-- [ ] `/theatre/perform.ts` – formats internal monologues and insights
+| Feature | Status |
+|---|---|
+| `chaosSimulator.ts` | ⛔️ Not yet started |
+| `dreamStateEngine.ts` | ⛔️ Not yet started |
+| `lucidToggle.ts` | ⛔️ Not yet started |
+| `archetypeEncounters.ts` | ⛔️ Not yet started |
+| `dreamDigestor.ts` | 🟡 Scaffolded |
 
 ---
 
 ## 🌐 API & Mutation Logging System
 
-- [x] `/api/logMutation.ts` – logs mutations via POST request
-- [x] `ChatBubble.tsx` – triggers mutation logging
-- [ ] `logPathManager.ts` – handles dev vs prod pathing
-- [ ] `.env` toggles: mutation logging, dream mode, debug traces
-- [ ] Mutation Viewer UI – sortable log browser (timeline/bubble chart)
+| Feature | Status |
+|---|---|
+| `/api/logMutation.ts` | ✅ Complete |
+| `ChatBubble.tsx` | ✅ Complete |
+| `logPathManager.ts` | ⛔️ Not yet started |
+| `.env` toggles: mutation logging, dream mode, debug traces | ⛔️ Not yet started |
+| Mutation Viewer UI | ⛔️ Not yet started |
 
 ---
 
 ## 📦 System Recovery & Guardrails
 
-- [x] Recovered from WSoD (white screen of death)
-- [x] Migrated `next.config.ts` → `next.config.mjs` (ESM compliance)
-- [x] Reset .next, reinstalled clean dependencies
-- [x] Confirmed baseline UI with Classic Router
-- [x] Git initialized and committed safe baseline
-- [ ] `scripts/reset.ts` – create dev state recovery script
+| Feature | Status |
+|---|---|
+| Recovered from WSoD (white screen of death) | ✅ Complete |
+| Migrated `next.config.ts` → `next.config.mjs` (ESM compliance) | ✅ Complete |
+| Reset .next, reinstalled clean dependencies | ✅ Complete |
+| Confirmed baseline UI with Classic Router | ✅ Complete |
+| Git initialized and committed safe baseline | ✅ Complete |
+| `scripts/reset.ts` – create dev state recovery script | ⛔️ Not yet started |
 
 ---
 
@@ -112,52 +114,13 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
 
 ## 📍 Priority Next Step
 
-**Simulate symbolic input → run through MCP → log trace ID → render symbolic output → feed into perform.ts**
+**Simulate symbolic input → run through MCP → log trace ID → render symbolic output → feed into perform logic**
 
 Then wire this loop into the CLI or a basic UI input box.
 
 ---
 
-## 📁 File Structure Tracker
-
-/frontend/
-├── mcp.ts
-├── agentState.ts
-├── loopMonitor.ts
-├── toolsRegistry.ts
-├── dreamDigestor.ts
-├── thoughtStream.ts
-├── reflect.ts
-├── system/
-│   ├── perform.ts
-│   ├── agentState.ts
-│   └── loopMonitor.ts
-├── trac-dreamspace/
-│   ├── dreamDigestor.ts
-│   ├── dreamStateEngine.ts
-│   ├── chaosSimulator.ts
-│   ├── lucidToggle.ts
-│   ├── archetypeEncounters.ts
-│   └── dreamLog.ts
-├── time-chamber/
-│   ├── mutationEngine.ts
-│   ├── simulationRun.ts
-│   ├── wisdomHarvest.ts
-│   ├── logPathManager.ts
-│   └── systemMirror/
-├── pages/api/
-│   ├── logMutation.ts
-├── components/
-│   └── ChatBubble.tsx
-├── .env
-├── .claude/
-├── specs/
-│   └── self-awareness-scaffold.md
-├── project/
-│   └── tasks.md   ← (this file)
-
-
----
+_Note: “🟡 Scaffolded” means the feature is partially implemented or has a working stub, but is not yet fully functional or integrated._
 
 _This file is symbolic. Update before each feature handoff, dev check-in, or system checkpoint._
 

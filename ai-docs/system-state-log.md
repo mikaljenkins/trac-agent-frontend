@@ -59,3 +59,15 @@ Defines reflection stagnation logic, mutation risk detection, and disengagement 
 - **Enhancement to SymbolicMutation Type**: The SymbolicMutation type has been extended to include a pairedInsights field, allowing for better tracking and display of insight-based updates.
 
 This update closes the full symbolic perception → mutation loop, ensuring that each trace stage's insights are matched with potential symbolic memory updates before mutation proposals are finalized. 
+
+## v0.1.3.1 — Taskboard Sync + Audit Alignment
+
+- Performed a full integrity audit of project/tasks.md against the current codebase and recent commits.
+- Introduced a new 🟡 Scaffolded status to clearly indicate features that are partially implemented or stubbed but not yet fully functional.
+- Marked ⛔️ for features not yet started, and ✅ for those fully complete and integrated.
+- Removed or revised references to deprecated files (e.g., /theatre/perform.ts).
+- Updated the taskboard to reflect the real-world status of all major features, including predictive modules, symbolic health forecasting, and AGI-facing scaffolds.
+- This patch ensures the roadmap and documentation accurately reflect the system's operational reality, supporting confident advancement to the next milestone.
+
+**Rationale:**
+The 🟡 Scaffolded status provides clarity for developers and strategists, distinguishing between features that are in progress and those that are not yet started. This improves planning, handoff, and auditability for all future phases of TracAgent's evolution. 
