@@ -78,4 +78,12 @@ function summarizeMutationPatterns(mutations: SymbolicMutation[]): Record<string
     patternCount[type] = (patternCount[type] || 0) + 1;
   });
   return patternCount;
+}
+
+export interface WeeklyReflectionEntry {
+  weekEnding: string;
+  dominantSymbols: string[];
+  archetypeForecast: string;
+  symbolicEntropyLevel: number;
+  narrative: string;
 } 
