@@ -50,4 +50,12 @@ TracAgent v0.1.0 is confirmed stable for symbolic input tracing, mutation cyclin
 - Self-Reflective Feedback Growth
 
 📎 _Linked Spec:_ [Reasoning Guardrails](/ai-docs/reasoning-guardrails.md)  
-Defines reflection stagnation logic, mutation risk detection, and disengagement protocols. 
+Defines reflection stagnation logic, mutation risk detection, and disengagement protocols.
+
+## v0.1.2 — Insight Pairing Activated
+
+- **Integration of insightPairer.ts into mutationEngine.ts**: The mutation engine now pairs insights with symbolic memory updates for each trace stage, enriching mutation rationales and enabling insight-based scoring boosts.
+- **UI Support for Displaying pairedInsights**: The Trace Viewer UI has been updated to display paired insights alongside mutation rationales, providing a clearer view of the symbolic perception → mutation loop.
+- **Enhancement to SymbolicMutation Type**: The SymbolicMutation type has been extended to include a pairedInsights field, allowing for better tracking and display of insight-based updates.
+
+This update closes the full symbolic perception → mutation loop, ensuring that each trace stage's insights are matched with potential symbolic memory updates before mutation proposals are finalized. 
