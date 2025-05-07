@@ -19,6 +19,10 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
 - [ ] UI wiring to MCP (symbol input box or CLI hook)
 - [ ] Agent trust drift visualizer (trust ↗︎/↘︎ over time)
 - [ ] Symbolic memory echo system → technically scaffolded via insights + mutation hooks
+- [x] 🔮 Predictive Modules – “Forecast archetype shifts and symbolic health”
+- [x] 📈 SymbolicPlotTracker – “Track symbolic health, entropy, and decay over time”
+- [x] 🧠 ArchetypePredictor – “Predict next likely archetype from mutation and symbolic trends”
+- [x] 🔁 Integration into loopMonitor.ts – “Connect forecast and plot health into agent loop”
 
 ---
 
