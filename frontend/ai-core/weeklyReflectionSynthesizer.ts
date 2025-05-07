@@ -23,6 +23,8 @@ export async function getMemoryChanges(days: number): Promise<SymbolicMemoryNode
 import { SymbolicMutation } from '@/types/trace';
 import { AgentState } from '@/system/agentState';
 import { compareWeeklyReflections, SymbolicDiff } from './symbolicDiffer';
+import { invokeArchetypeLLM, useLLMInvocation, LLMInvocationResult } from './invokeArchetypeLLM';
+import { logLLMInvocation } from '../journal/invocations/logLLMInvocation';
 
 export interface SymbolicReflectionLog {
   timestamp: string;
@@ -88,6 +90,7 @@ export interface WeeklyReflectionEntry {
   symbolicEntropyLevel: number;
   narrative: string;
   diff?: SymbolicDiff;
+  llmInvocation?: LLMInvocationResult;
 }
 
 // Stub for loading the latest weekly reflection (to be implemented with real file/db logic)
@@ -128,9 +131,17 @@ export async function synthesizeWeeklyReflectionWithDrift(agentState: AgentState
     }
   }
 
-  // Attach the diff to the reflection entry
+  // Optionally invoke the LLM and log the result
+  let llmInvocation = undefined;
+  if (useLLMInvocation()) {
+    llmInvocation = await invokeArchetypeLLM(agentState);
+    await logLLMInvocation(llmInvocation);
+  }
+
+  // Attach the diff and LLM invocation to the reflection entry
   return {
     ...newReflection,
-    diff
+    diff,
+    llmInvocation
   };
 } 
