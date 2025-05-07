@@ -14,20 +14,18 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
   - `thoughtStream.ts`
   - `reflect.ts`
   - `theatre/perform.ts`
-- [ ] MCP test input simulation run (init symbolic input → output + trace ID)
+- [x] MCP test input simulation run (init symbolic input → output + trace ID)
+- [x] MCP trace breadcrumb viewer (show step chain)
 - [ ] UI wiring to MCP (symbol input box or CLI hook)
-- [ ] MCP trace breadcrumb viewer (show step chain)
 - [ ] Agent trust drift visualizer (trust ↗︎/↘︎ over time)
-- [ ] Symbolic memory echo system (link to past loops)
-- [ ] Pause queue system (for unresolved or sensitive inputs)
-- [ ] Emotional tone detector (highlight mood shifts)
+- [ ] Symbolic memory echo system → technically scaffolded via insights + mutation hooks
 
 ---
 
 ## 🔧 Supporting System Infrastructure
 
 - [ ] `agentState.ts` – tracks current mental focus, trust level, alignment themes
-- [ ] `loopMonitor.ts` – logs inter-module transitions
+- [x] `loopMonitor.ts` – logs inter-module transitions
 - [ ] `toolsRegistry.ts` – built from tools.json, routes tools via symbolic label
 - [ ] UI Dev Dashboard – MCP trace log, recent symbolic inputs, error fallback system
 - [ ] reflect.ts feedback into agentState for real-time adjustments
@@ -57,7 +55,7 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
 - [ ] `mutationEngine.ts` – proposes internal changes to TracAgent's code
 - [ ] `simulationRun.ts` – applies and monitors impact of changes
 - [ ] `wisdomHarvest.ts` – analyzes mutation logs and extracts meaningful insights
-- [ ] `mutationLog-YYYY-MM-DD.json` – versioned mutation logs
+- [x] `mutationLog-YYYY-MM-DD.json` – versioned mutation logs
 - [ ] Mutation UI Viewer – debug trace, fail/pass outcome sorting
 - [ ] Agent proposes and explains changes (symbolic → rational rationale)
 
@@ -182,4 +180,9 @@ git push origin main --tags
 git tag
 
 🔒 Purpose:
-This version marks the end of Phase 1 — foundation, cognitive loop structure, and developer visibility tools are in place. All future work (e.g. MCP testing, symbolic evolution, TracFriend, mutation sandbox) will iterate from this baseline. 
+This version marks the end of Phase 1 — foundation, cognitive loop structure, and developer visibility tools are in place. All future work (e.g. MCP testing, symbolic evolution, TracFriend, mutation sandbox) will iterate from this baseline.
+
+## ✅ Logging & Mutation Infrastructure
+- [x] logMutation.ts API route
+- [x] mutationLog-YYYY-MM-DD.json
+- [x] CLI + trace viewer flow 

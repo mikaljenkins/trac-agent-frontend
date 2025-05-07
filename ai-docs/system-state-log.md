@@ -1,3 +1,5 @@
+📦 *Note: This file was moved from /project/system-state-log.md to /ai-docs/system-state-log.md on 2025-05-07 for long-term architectural documentation.*
+
 # 📊 TracAgent System State Log  
 _Last updated: 2025-05-07_  
 **Version:** v0.1.0
