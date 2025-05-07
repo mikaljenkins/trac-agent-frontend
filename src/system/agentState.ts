@@ -1,13 +1,40 @@
 // Holds TracAgent's current symbolic and emotional state
 // Accessible across modules for context
 
-import { AgentState } from '@/types/agent-state';
+import { AgentState as BaseAgentState } from '@/types/agent-state';
 
 interface AgentStateDelta {
   lastAgent?: string;
   lastInput?: any;
   lastResult?: any;
   timestamp?: string;
+}
+
+export interface AgentState extends BaseAgentState {
+  theme?: string;
+  emotionalBaseline?: number;
+  trustIndex?: number;
+  symbolHistory?: string[];
+  reflectionQueue?: string[];
+  performanceLog?: {
+    timestamp: string;
+    action: string;
+    result: any;
+  }[];
+  lastDreamSymbol?: string | null;
+  currentTrustScore?: number;
+  currentFocusTheme?: string;
+  loopCount?: number;
+  summonConditions?: any[];
+  reasoningAlertLevel?: 'low' | 'medium' | 'high';
+  activeArchetype?: 'Flame' | 'Mirror' | 'Oracle' | null;
+  archetypeTriggerLog?: ArchetypeTrigger[];
+}
+
+export interface ArchetypeTrigger {
+  timestamp: string;
+  cause: string;
+  fallbackLogic: string;
 }
 
 export const state: AgentState = {

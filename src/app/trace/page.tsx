@@ -9,6 +9,7 @@ export interface SymbolicMutation {
   rationale: string;
   outcome?: 'accepted' | 'rejected' | 'pending';
   stage?: string;
+  pairedInsights?: { rationale: string }[];
 }
 
 export interface SymbolicTrace {
@@ -299,6 +300,16 @@ export default function TraceViewer() {
                                   <span className="ml-4 text-xs text-gray-200 italic">
                                     {mutation.rationale.length > 80 ? mutation.rationale.slice(0, 80) + '…' : mutation.rationale}
                                   </span>
+                                )}
+                                {mutation.pairedInsights && mutation.pairedInsights.length > 0 && (
+                                  <div className="ml-4 text-xs text-gray-400">
+                                    <span className="italic">Paired insights:</span>
+                                    {mutation.pairedInsights.map((p, i) => (
+                                      <span key={i} className="block mt-1">
+                                        {p.rationale}
+                                      </span>
+                                    ))}
+                                  </div>
                                 )}
                               </div>
                             ))}

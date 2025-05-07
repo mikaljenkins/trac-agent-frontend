@@ -1,7 +1,13 @@
-import { SymbolicTrace, SymbolicMutation } from '@/types/trace';
+import { SymbolicTrace, SymbolicMutation as BaseSymbolicMutation } from '@/types/trace';
 import { getTraceById } from '@/lib/trac-utils/traceReader';
+import { pairInsightsWithSymbols, SymbolicMemoryUpdate } from '../ai-core/insightPairer';
 // import { updateSymbolicNode, createSymbolicNode, getUnusedNodes } from '@/system/symbolicManager'; // TODO: Implement or mock
 // import { postLogMutation } from '@/api/logMutation'; // TODO: Implement or mock
+
+// Locally extend SymbolicMutation to support paired insight metadata
+export interface SymbolicMutation extends BaseSymbolicMutation {
+  pairedInsights?: SymbolicMemoryUpdate[];
+}
 
 /**
  * Proposes symbolic mutations based on a symbolic trace.
@@ -9,30 +15,31 @@ import { getTraceById } from '@/lib/trac-utils/traceReader';
  * @returns Array of proposed SymbolicMutation objects
  */
 export function proposeMutations(trace: SymbolicTrace): SymbolicMutation[] {
-  // TODO: Use real heuristics. For now, stub with a sample mutation per stage.
   const mutations: SymbolicMutation[] = [];
   for (const stage of trace.stages) {
+    // Pair insights with symbols for this stage
+    const paired = pairInsightsWithSymbols(stage);
     if (stage.insights && stage.insights.length > 0) {
-      // Example: reinforce the first symbol mentioned in insights
       const match = stage.insights[0].match(/"([^"]+)"/);
       if (match) {
         mutations.push({
           id: `${trace.traceId}-${stage.step}-reinforce`,
           type: 'reinforce',
           targetSymbol: match[1],
-          rationale: `Symbol "${match[1]}" appeared frequently in insights. Reinforcing.`,
+          rationale: `Symbol "${match[1]}" appeared frequently in insights. Reinforcing.` + (paired.length > 0 ? ` Paired insights: ${paired.map((p: SymbolicMemoryUpdate) => p.rationale).join('; ')}` : ''),
           outcome: 'pending',
+          pairedInsights: paired.length > 0 ? paired : undefined,
         });
       }
     }
-    // Example: create a new node if no insights
     if (!stage.insights || stage.insights.length === 0) {
       mutations.push({
         id: `${trace.traceId}-${stage.step}-create`,
         type: 'create',
         targetSymbol: `new-symbol-${stage.step}`,
-        rationale: `No insights found for stage ${stage.step}. Proposing new symbolic node.`,
+        rationale: `No insights found for stage ${stage.step}. Proposing new symbolic node.` + (paired.length > 0 ? ` Paired insights: ${paired.map((p: SymbolicMemoryUpdate) => p.rationale).join('; ')}` : ''),
         outcome: 'pending',
+        pairedInsights: paired.length > 0 ? paired : undefined,
       });
     }
   }

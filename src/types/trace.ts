@@ -4,6 +4,8 @@ export interface SymbolicMutation {
   targetSymbol: string;
   rationale: string;
   outcome?: 'accepted' | 'rejected' | 'pending';
+  // If present, these are symbolic memory updates paired with this mutation (added by mutation engine)
+  pairedInsights?: any[]; // SymbolicMemoryUpdate[]; intentionally loose for cross-module compatibility
 }
 
 export interface SymbolicTrace {
