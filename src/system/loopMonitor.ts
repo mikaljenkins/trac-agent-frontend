@@ -53,4 +53,23 @@ export const getLoopLog = (timeframe: { start?: string; end?: string } = {}) => 
 
 export const clearLoopLog = () => {
   loopLog.length = 0;
-}; 
+};
+
+// Indicates the level of reasoning risk detected in the agent's loop
+export type ReasoningAlertLevel = 'low' | 'medium' | 'high';
+
+// Placeholder for session state type
+export interface SessionState {
+  agentState: AgentState;
+  // ...other session fields
+}
+
+/**
+ * Detects reasoning loop anomalies such as stagnation, overthinking, or disengagement.
+ * @param session The current session state
+ * @returns ReasoningAlertLevel
+ */
+export function detectReasoningLoopAnomalies(session: SessionState): ReasoningAlertLevel {
+  // TODO: Implement actual anomaly detection logic
+  return 'low';
+} 

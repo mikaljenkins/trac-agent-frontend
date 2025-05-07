@@ -18,4 +18,6 @@ export interface AgentState {
   currentFocusTheme?: string;
   loopCount?: number;
   summonConditions?: any[];
+  // Indicates potential reasoning instability: stagnation, overthinking, or disengagement
+  reasoningAlertLevel?: 'low' | 'medium' | 'high';
 } 

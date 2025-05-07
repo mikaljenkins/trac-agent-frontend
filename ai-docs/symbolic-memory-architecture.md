@@ -138,4 +138,7 @@ These anchors create a traceable arc within a session or across time, allowing T
 ---
 
 Symbolic memory transforms conversation from reaction to reflection.  
-It allows TracAgent to move from answering to **understanding**. 
+It allows TracAgent to move from answering to **understanding**.
+
+📎 _Linked Spec:_ [Reasoning Guardrails](/ai-docs/reasoning-guardrails.md)  
+Defines reflection stagnation logic, mutation risk detection, and disengagement protocols. 

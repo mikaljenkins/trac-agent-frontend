@@ -47,4 +47,7 @@ _Last updated: 2025-05-07_
 TracAgent v0.1.0 is confirmed stable for symbolic input tracing, mutation cycling, and introspection UI. System is ready for:
 - Symbolic Insight Pairing
 - Node Evolution Testing
-- Self-Reflective Feedback Growth 
+- Self-Reflective Feedback Growth
+
+📎 _Linked Spec:_ [Reasoning Guardrails](/ai-docs/reasoning-guardrails.md)  
+Defines reflection stagnation logic, mutation risk detection, and disengagement protocols. 

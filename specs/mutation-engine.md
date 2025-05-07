@@ -1,3 +1,6 @@
+📎 _Linked Spec:_ [Reasoning Guardrails](/ai-docs/reasoning-guardrails.md)  
+> Defines reflection stagnation logic, mutation risk detection, and disengagement protocols.
+
 ⸻
 
 🔍 **Feature Overview**
