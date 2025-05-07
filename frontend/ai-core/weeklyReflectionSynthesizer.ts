@@ -22,6 +22,7 @@ export async function getMemoryChanges(days: number): Promise<SymbolicMemoryNode
 
 import { SymbolicMutation } from '@/types/trace';
 import { AgentState } from '@/system/agentState';
+import { compareWeeklyReflections, SymbolicDiff } from './symbolicDiffer';
 
 export interface SymbolicReflectionLog {
   timestamp: string;
@@ -86,4 +87,50 @@ export interface WeeklyReflectionEntry {
   archetypeForecast: string;
   symbolicEntropyLevel: number;
   narrative: string;
+  diff?: SymbolicDiff;
+}
+
+// Stub for loading the latest weekly reflection (to be implemented with real file/db logic)
+export async function loadLatestWeeklyReflection(): Promise<WeeklyReflectionEntry | null> {
+  // TODO: Implement file or DB loading logic
+  return null;
+}
+
+export async function synthesizeWeeklyReflectionWithDrift(agentState: AgentState): Promise<WeeklyReflectionEntry> {
+  // Generate the new reflection
+  const log = await synthesizeWeeklyReflection(agentState);
+
+  // Map SymbolicReflectionLog to WeeklyReflectionEntry
+  const newReflection: WeeklyReflectionEntry = {
+    weekEnding: new Date().toISOString().split('T')[0],
+    dominantSymbols: log.dominantSymbols || [],
+    archetypeForecast: log.predictedNextArchetype || 'Unknown',
+    symbolicEntropyLevel: 0, // TODO: Integrate with entropy tracking if available
+    narrative: log.summary || ''
+  };
+
+  // Load the previous reflection
+  const prevReflection = await loadLatestWeeklyReflection();
+
+  let diff: SymbolicDiff | undefined = undefined;
+  if (prevReflection) {
+    diff = compareWeeklyReflections(prevReflection, newReflection);
+    // Log a summary of the drift
+    console.log('--- Symbolic Drift Analysis ---');
+    console.log('Repeated symbols:', diff.repeatedSymbols);
+    console.log('Added symbols:', diff.addedSymbols);
+    console.log('Faded symbols:', diff.fadedSymbols);
+    if (diff.archetypeShift) {
+      console.log('Archetype shift:', diff.archetypeShift);
+    }
+    if (typeof diff.entropyDelta === 'number') {
+      console.log('Entropy delta:', diff.entropyDelta);
+    }
+  }
+
+  // Attach the diff to the reflection entry
+  return {
+    ...newReflection,
+    diff
+  };
 } 
