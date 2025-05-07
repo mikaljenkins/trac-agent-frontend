@@ -127,4 +127,9 @@ export function deactivateArchetype(): void {
  * - Add archetype-specific state management
  * - Implement fallback logic for failed activations
  * - Add metrics for archetype effectiveness
- */ 
+ */
+
+export function generatePromptForArchetype(agentState: any, archetype: string): string {
+  // TODO: Implement archetype-specific prompt generation
+  return `System prompt for archetype ${archetype} with state: ${JSON.stringify(agentState)}`;
+} 
