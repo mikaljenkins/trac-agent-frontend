@@ -7,6 +7,9 @@ import { AgentState } from '@/system/agentState';
 import { analyzeSymbolicHealth } from '../../frontend/ai-core/symbolicPlotTracker';
 import { predictNextArchetype } from '../../frontend/ai-core/archetypePredictor';
 import type { SymbolicMemoryNode } from '../../frontend/ai-core/symbolicPlotTracker';
+import { shouldTriggerWeekly } from './loop/weeklyTrigger';
+import { synthesizeWeeklyReflection } from '../../frontend/ai-core/weeklyReflectionSynthesizer';
+import { writeWeeklyReflection } from '../../frontend/journal/weekly/writeWeeklyReflection';
 
 export interface LoopEvent {
   input: any;
@@ -113,4 +116,20 @@ export function updateSymbolicForecast(agentState: AgentState, symbols: Symbolic
   });
 
   // TODO: UI hook — display predictedArchetype and entropy in Trace Viewer UI panel
+}
+
+// At the end of the main agent loop or symbolic cycle:
+export async function maybeRunWeeklyReflection(agentState: AgentState) {
+  if (shouldTriggerWeekly()) {
+    const reflection = await synthesizeWeeklyReflection(agentState);
+    // Map to WeeklyReflectionEntry if needed
+    const entry = {
+      weekEnding: new Date().toISOString().split('T')[0],
+      dominantSymbols: reflection.dominantSymbols || [],
+      archetypeForecast: reflection.predictedNextArchetype || 'Unknown',
+      symbolicEntropyLevel: 0, // TODO: Integrate with entropy tracking if available
+      narrative: reflection.summary || ''
+    };
+    await writeWeeklyReflection(entry);
+  }
 } 
