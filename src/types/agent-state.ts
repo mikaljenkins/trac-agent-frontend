@@ -17,4 +17,5 @@ export interface AgentState {
   currentTrustScore?: number;
   currentFocusTheme?: string;
   loopCount?: number;
+  summonConditions?: any[];
 } 

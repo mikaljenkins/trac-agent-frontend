@@ -1,11 +1,15 @@
 // Cloned version of TracAgent's state for simulation
 // Allows mutations without affecting the main agent
 
-import { AgentState } from '@/system/agentState';
+import { AgentState } from '@/types/agent-state';
 
 export interface ClonedAgentState extends AgentState {
-  mutationHistory: string[];
-  simulationId: string;
+  stats?: {
+    mutationHistory?: string[];
+    simulationId?: string;
+  };
+  lastDreamSymbol?: string | null;
+  [key: string]: any;
 }
 
 export const createClonedState = (baseState: AgentState, simulationId: string): ClonedAgentState => ({

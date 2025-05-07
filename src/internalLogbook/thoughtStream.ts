@@ -33,15 +33,11 @@ export function logThought(
 
   // Trigger introspective prompts based on thought characteristics
   if (type === 'uncertainty' && confidence < 0.3) {
-    generatePrompt(
-      `What does this uncertainty reveal about my understanding? "${content}"`,
-      'insight'
-    );
+    // TODO: Use prompt category/ID to shape behavior if needed
+    generatePrompt();
   } else if (type === 'hypothesis' && confidence > 0.7) {
-    generatePrompt(
-      `How might this hypothesis transform my perspective? "${content}"`,
-      'growth'
-    );
+    // TODO: Use prompt category/ID to shape behavior if needed
+    generatePrompt();
   }
 
   return thought;

@@ -1,0 +1,50 @@
+{
+  "traceId": "1cd21c1d-4c08-40b2-9e95-ede859d62620",
+  "input": "mirror fragmentation",
+  "timestamp": "2025-05-07T01:45:04.180Z",
+  "stages": [
+    {
+      "step": "thoughtStream",
+      "output": {
+        "thoughts": [],
+        "connections": [],
+        "intensity": 0,
+        "timestamp": "2025-05-07T01:45:04.180Z"
+      },
+      "insights": []
+    },
+    {
+      "step": "dreamDigestor",
+      "output": {
+        "symbols": [],
+        "patterns": [],
+        "intensity": 0,
+        "clarity": 0,
+        "timestamp": "2025-05-07T01:45:04.180Z"
+      },
+      "insights": []
+    },
+    {
+      "step": "reflect",
+      "output": {
+        "insights": [],
+        "connections": [],
+        "confidence": 0,
+        "timestamp": "2025-05-07T01:45:04.181Z"
+      },
+      "insights": []
+    },
+    {
+      "step": "perform",
+      "output": {
+        "id": "mf7g1np8n",
+        "timestamp": "2025-05-07T01:45:04.181Z",
+        "content": "",
+        "type": "symbolic",
+        "emotionalTone": 0.5,
+        "symbols": []
+      },
+      "insights": []
+    }
+  ]
+}

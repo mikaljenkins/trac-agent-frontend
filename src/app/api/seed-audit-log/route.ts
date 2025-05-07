@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logSelfAudit, getRecentAuditLogs } from '@trac/trac-memory/self-awareness/selfAudit';
-import { SelfAuditLogEntry } from '@trac/trac-memory/self-awareness/self-audit-log-schema';
+import { logSelfAudit } from '../../../../trac-memory/self-awareness/selfAudit';
+import { SelfAuditLogEntry } from '../../../../trac-memory/self-awareness/self-audit-log-schema';
+import { getAuditLogs } from '../../../../trac-memory/self-awareness/auditLogStore';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +18,6 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   // Return all audit logs for debugging (up to 50)
-  const logs = getRecentAuditLogs(50);
+  const logs = getAuditLogs(50);
   return NextResponse.json({ logs });
 } 

@@ -59,8 +59,8 @@ class MutationLogger {
     finalState: ClonedAgentState,
     mutation: Mutation
   ): MutationOutcome {
-    const trustChange = finalState.currentTrustScore - initialState.currentTrustScore;
-    const loopChange = finalState.loopCount - initialState.loopCount;
+    const trustChange = (finalState.currentTrustScore ?? 0) - (initialState.currentTrustScore ?? 0);
+    const loopChange = (finalState.loopCount ?? 0) - (initialState.loopCount ?? 0);
     
     if (trustChange > 0.1 && loopChange <= 0) return 'success';
     if (trustChange < -0.1 || loopChange > 0) return 'conflicted';
@@ -72,8 +72,8 @@ class MutationLogger {
     finalState: ClonedAgentState
   ) {
     return {
-      trustChange: finalState.currentTrustScore - initialState.currentTrustScore,
-      loopCountChange: finalState.loopCount - initialState.loopCount,
+      trustChange: (finalState.currentTrustScore ?? 0) - (initialState.currentTrustScore ?? 0),
+      loopCountChange: (finalState.loopCount ?? 0) - (initialState.loopCount ?? 0),
       symbolShift: finalState.lastDreamSymbol !== initialState.lastDreamSymbol
     };
   }

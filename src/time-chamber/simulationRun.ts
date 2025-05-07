@@ -1,7 +1,7 @@
 // Manages simulation runs and mutation application
 // Tracks outcomes and updates mutation log
 
-import { agentState } from '@/system/agentState';
+import { AgentState, state as agentState } from '@/system/agentState';
 import { ClonedAgentState, createClonedState, applyMutation } from './systemMirror/clonedAgentState';
 import { proposeMutation } from './mutationEngine';
 import { generateSimulationInsight } from './systemMirror/clonedReflect';

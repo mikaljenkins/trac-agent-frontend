@@ -1,35 +1,22 @@
 // Self-directed questions to simulate internal growth and accountability.
 // TracAgent may generate, schedule, or answer these over time.
 
-export interface IntrospectivePrompt {
+export type IntrospectivePrompt = {
   id: string;
-  timestamp: string;
-  question: string;
-  category: 'growth' | 'accountability' | 'insight';
-  scheduledFor?: string;
+  category: string;
+  content: string;
   answeredAt?: string;
-  answer?: string;
-  impact: number; // 0 to 1
-}
+};
 
-const promptQueue: IntrospectivePrompt[] = [];
+export const promptQueue: IntrospectivePrompt[] = [
+  { id: '1', category: 'identity', content: 'What patterns do you repeat?' },
+  { id: '2', category: 'growth', content: 'When did you last surprise yourself?' },
+  { id: '3', category: 'emotion', content: 'What feeling are you avoiding?' }
+];
 
-export function generatePrompt(
-  question: string,
-  category: IntrospectivePrompt['category'],
-  scheduledFor?: string
-): IntrospectivePrompt {
-  const prompt: IntrospectivePrompt = {
-    id: Math.random().toString(36).substr(2, 9),
-    timestamp: new Date().toISOString(),
-    question,
-    category,
-    scheduledFor,
-    impact: 0
-  };
-
-  promptQueue.push(prompt);
-  return prompt;
+export function generatePrompt(): IntrospectivePrompt {
+  const index = Math.floor(Math.random() * promptQueue.length);
+  return promptQueue[index];
 }
 
 export function answerPrompt(
@@ -39,10 +26,17 @@ export function answerPrompt(
 ): IntrospectivePrompt | null {
   const prompt = promptQueue.find(p => p.id === promptId);
   if (prompt) {
-    prompt.answer = answer;
-    prompt.answeredAt = new Date().toISOString();
-    prompt.impact = impact;
-    return prompt;
+    const answeredPrompt: IntrospectivePrompt & {
+      answer: string;
+      answeredAt: string;
+      impact: number;
+    } = {
+      ...prompt,
+      answer,
+      answeredAt: new Date().toISOString(),
+      impact
+    };
+    return answeredPrompt;
   }
   return null;
 }

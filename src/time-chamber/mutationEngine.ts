@@ -18,7 +18,7 @@ const mutationStrategies = {
     id: Math.random().toString(36).substr(2, 9),
     timestamp: new Date().toISOString(),
     field: 'currentTrustScore',
-    value: Math.max(0, Math.min(1, state.currentTrustScore + (Math.random() - 0.5) * 0.2)),
+    value: Math.max(0, Math.min(1, (state.currentTrustScore ?? 1) + (Math.random() - 0.5) * 0.2)),
     reason: 'Trust level adjustment based on recent interactions',
     impact: 0.3
   }),
@@ -26,7 +26,7 @@ const mutationStrategies = {
     id: Math.random().toString(36).substr(2, 9),
     timestamp: new Date().toISOString(),
     field: 'currentFocusTheme',
-    value: state.lastDreamSymbol || state.currentFocusTheme,
+    value: state.lastDreamSymbol || (state.currentFocusTheme ?? 'conscious evolution'),
     reason: 'Focus shift based on dominant dream symbol',
     impact: 0.5
   }),
@@ -34,7 +34,7 @@ const mutationStrategies = {
     id: Math.random().toString(36).substr(2, 9),
     timestamp: new Date().toISOString(),
     field: 'loopCount',
-    value: state.loopCount + 1,
+    value: (state.loopCount ?? 0) + 1,
     reason: 'Loop count increment for pattern recognition',
     impact: 0.2
   })
