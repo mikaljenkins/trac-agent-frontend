@@ -1,7 +1,7 @@
 // Cloned version of TracAgent's state for simulation
 // Allows mutations without affecting the main agent
 
-import { AgentState } from '@/types/agent-state';
+import { AgentState } from '@/system/agentState';
 
 export interface ClonedAgentState extends AgentState {
   stats?: {

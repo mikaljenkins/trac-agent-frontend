@@ -57,6 +57,4 @@ export const state: AgentState = {
 export function updateAgentState(delta: AgentStateDelta): AgentState {
   Object.assign(state, delta);
   return state;
-}
-
-export type { AgentState } from '@/types/agent-state'; 
+} 

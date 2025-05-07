@@ -3,7 +3,7 @@
 // Logs when thoughts trigger introspection
 // Logs awakening moments and trust updates
 
-import { AgentState } from '@/types/agent-state';
+import { AgentState } from '@/system/agentState';
 
 export interface LoopEvent {
   input: any;

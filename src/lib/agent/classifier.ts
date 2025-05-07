@@ -1,4 +1,4 @@
-import { AgentState } from '@/types/agent-state';
+import { AgentState } from '@/system/agentState';
 
 interface ClassificationContext {
   type: 'symbolic' | 'reflective' | 'performative' | 'idle';
