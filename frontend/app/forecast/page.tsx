@@ -1,240 +1,319 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { SymbolicForecast } from '@/ai-core/symbolicForecaster';
-import { Line } from 'react-chartjs-2';
+import { SymbolicForecast } from '../../ai-core/symbolicForecaster';
+import { saveAs } from 'file-saver';
 
-interface ForecastFilters {
-  minConfidence: number;
-  selectedArchetypes: string[];
-  searchQuery: string;
-  sortBy: 'confidence' | 'decay' | 'drift';
+interface ForecastMetadata {
+  timestamp: string;
+  totalSymbols: number;
+  averageConfidence: number;
+  dominantArchetype: string;
+  topSymbols: Array<{
+    symbol: string;
+    confidence: number;
+  }>;
+  driftPredictions: Array<{
+    symbol: string;
+    likelihood: number;
+  }>;
 }
 
-function SymbolForecastCard({ forecast }: { forecast: SymbolicForecast }) {
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.7) return 'bg-blue-500';
-    if (confidence >= 0.4) return 'bg-orange-500';
-    return 'bg-red-500';
-  };
+interface ForecastExport {
+  timestamp: string;
+  forecasts: SymbolicForecast[];
+  metadata: ForecastMetadata;
+}
+
+function getConfidenceColor(confidence: number): string {
+  if (confidence >= 0.7) return 'bg-green-500';
+  if (confidence >= 0.4) return 'bg-yellow-500';
+  return 'bg-red-500';
+}
+
+function getDriftColor(drift: boolean): string {
+  return drift ? 'text-red-500' : 'text-green-500';
+}
+
+function ForecastCard({ forecast }: { forecast: ForecastExport }) {
+  const date = new Date(forecast.timestamp).toLocaleDateString();
+  const { metadata } = forecast;
+  const [showNarrative, setShowNarrative] = useState(false);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-semibold">{forecast.symbol}</h3>
-        <div className="flex items-center space-x-2">
-          <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className={`h-full ${getConfidenceColor(forecast.confidence)}`}
-              style={{ width: `${forecast.confidence * 100}%` }}
-            />
+    <div className="rounded-xl shadow-md p-6 bg-white dark:bg-gray-900 transition-all hover:shadow-lg">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <div className="text-sm text-gray-400 dark:text-gray-500">{date}</div>
+          <div className="font-bold text-lg mt-1">{metadata.dominantArchetype}</div>
+        </div>
+        <div className="flex flex-col items-end space-y-1">
+          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+            {metadata.totalSymbols} symbols
+          </span>
+          <span className={`text-sm ${getDriftColor(metadata.driftPredictions.length > 0)}`}>
+            {metadata.driftPredictions.length > 0 ? '⚠️ Drift Risk' : '✓ Stable'}
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Top Symbols</h4>
+          <ul className="space-y-2">
+            {metadata.topSymbols.map(({ symbol, confidence }) => (
+              <li key={symbol} className="flex items-center justify-between group">
+                <span className="text-sm truncate flex-1 group-hover:text-blue-500 transition-colors">
+                  {symbol}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${getConfidenceColor(confidence)}`}
+                      style={{ width: `${confidence * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">
+                    {(confidence * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {metadata.driftPredictions.length > 0 && (
+          <div>
+            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Drift Risks</h4>
+            <div className="space-y-1">
+              {metadata.driftPredictions.map(({ symbol, likelihood }) => (
+                <div key={symbol} className="flex items-center text-sm">
+                  <span className="text-red-500 mr-2">⚠️</span>
+                  <span className="flex-1 truncate">{symbol}</span>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {(likelihood * 100).toFixed(1)}%
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <span className="text-sm text-gray-600">
-            {Math.round(forecast.confidence * 100)}%
-          </span>
-        </div>
-      </div>
+        )}
 
-      <div className="mb-3">
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
-          <span>Projected Decay</span>
-          <span>{Math.round(forecast.projectedDecay * 100)}%</span>
-        </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-purple-500"
-            style={{ width: `${forecast.projectedDecay * 100}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2 mb-3">
-        {forecast.archetypeInfluence.map(archetype => (
-          <span
-            key={archetype}
-            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+        <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setShowNarrative(!showNarrative)}
+            className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 flex items-center"
           >
-            {archetype}
-          </span>
-        ))}
-      </div>
-
-      <p className="text-sm text-gray-700">{forecast.forecastNarrative}</p>
-
-      {forecast.likelyDrift && (
-        <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-          ⚠️ High drift risk detected
+            {showNarrative ? 'Hide Details' : 'Show Details'}
+            <span className="ml-1">{showNarrative ? '▲' : '▼'}</span>
+          </button>
+          
+          {showNarrative && (
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 space-y-2">
+              {forecast.forecasts.map(f => (
+                <div key={f.symbol} className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                  <div className="font-medium">{f.symbol}</div>
+                  <div className="text-xs mt-1">{f.forecastNarrative}</div>
+                  <div className="flex items-center space-x-2 mt-1 text-xs">
+                    <span className={`px-1 rounded ${f.memoryEcho ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {f.memoryEcho ? 'Persistent' : 'Emergent'}
+                    </span>
+                    <span className="text-gray-500">
+                      Volatility: {(f.volatilityScore * 100).toFixed(1)}%
+                    </span>
+                    <span className="text-gray-500">
+                      Impact: {(f.archetypeVolatilityImpact * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+        <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-sm">
+            <span className="text-gray-500 dark:text-gray-400">Avg Confidence: </span>
+            <span className="font-medium text-blue-500">
+              {(metadata.averageConfidence * 100).toFixed(1)}%
+            </span>
+          </div>
+          <div className="flex space-x-2">
+            <a
+              href={`/api/forecast/${date}`}
+              className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Raw
+            </a>
+            <button
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(forecast, null, 2)], {
+                  type: 'application/json',
+                });
+                saveAs(blob, `forecast-${date}.json`);
+              }}
+              className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400"
+            >
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default function ForecastPage() {
-  const [forecasts, setForecasts] = useState<SymbolicForecast[]>([]);
+export default function ForecastViewer() {
+  const [forecasts, setForecasts] = useState<ForecastExport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<ForecastFilters>({
-    minConfidence: 0.4,
-    selectedArchetypes: [],
-    searchQuery: '',
-    sortBy: 'confidence',
+  const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    archetype: '',
+    minConfidence: 0,
+    showDriftOnly: false,
   });
 
   useEffect(() => {
-    const fetchForecasts = async () => {
+    async function loadForecasts() {
       try {
-        const res = await fetch('/api/forecast');
-        const data = await res.json();
-        setForecasts(data);
+        const response = await fetch('/api/forecast/list');
+        if (!response.ok) throw new Error('Failed to load forecasts');
+        const data = await response.json();
+        setForecasts(data.sort((a: ForecastExport, b: ForecastExport) => 
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        ));
       } catch (err) {
-        console.error('Failed to fetch forecasts:', err);
+        console.error('Error loading forecasts:', err);
+        setError('Failed to load forecasts. Please try again later.');
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchForecasts();
+    loadForecasts();
   }, []);
 
-  // Filter and sort forecasts
-  const filteredForecasts = forecasts
-    .filter(forecast => {
-      if (forecast.confidence < filters.minConfidence) return false;
-      if (filters.searchQuery && !forecast.symbol.toLowerCase().includes(filters.searchQuery.toLowerCase())) return false;
-      if (filters.selectedArchetypes.length > 0 && !forecast.archetypeInfluence.some(a => filters.selectedArchetypes.includes(a))) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      switch (filters.sortBy) {
-        case 'confidence':
-          return b.confidence - a.confidence;
-        case 'decay':
-          return b.projectedDecay - a.projectedDecay;
-        case 'drift':
-          return a.likelyDrift === b.likelyDrift ? 0 : a.likelyDrift ? -1 : 1;
-        default:
-          return 0;
-      }
-    });
+  const filteredForecasts = forecasts.filter(forecast => {
+    const matchesSearch = filters.search === '' || 
+      forecast.metadata.topSymbols.some(s => 
+        s.symbol.toLowerCase().includes(filters.search.toLowerCase())
+      );
+    
+    const matchesArchetype = filters.archetype === '' || 
+      forecast.metadata.dominantArchetype === filters.archetype;
+    
+    const matchesConfidence = forecast.metadata.averageConfidence >= filters.minConfidence;
 
-  // Calculate summary metrics
-  const totalSymbols = forecasts.length;
-  const avgConfidence = forecasts.reduce((sum, f) => sum + f.confidence, 0) / totalSymbols;
-  const topArchetype = forecasts
-    .flatMap(f => f.archetypeInfluence)
-    .reduce((acc, curr) => {
-      acc[curr] = (acc[curr] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-  const dominantArchetype = Object.entries(topArchetype)
-    .sort(([, a], [, b]) => b - a)[0]?.[0];
+    const matchesDrift = !filters.showDriftOnly || 
+      forecast.metadata.driftPredictions.length > 0;
+
+    return matchesSearch && matchesArchetype && matchesConfidence && matchesDrift;
+  });
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Loading forecasts...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Summary Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Total Symbols</h3>
-            <p className="text-2xl font-bold">{totalSymbols}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Average Confidence</h3>
-            <p className="text-2xl font-bold">{Math.round(avgConfidence * 100)}%</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Dominant Archetype</h3>
-            <p className="text-2xl font-bold">{dominantArchetype || 'None'}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-4 dark:text-white">Symbolic Forecast Archive</h1>
+        
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Min Confidence
-            </label>
+          <input
+            type="text"
+            placeholder="Search symbols..."
+            value={filters.search}
+            onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+            className="px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          />
+          
+          <select
+            value={filters.archetype}
+            onChange={e => setFilters(f => ({ ...f, archetype: e.target.value }))}
+            className="px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          >
+            <option value="">All Archetypes</option>
+            <option value="Flame">Flame</option>
+            <option value="Mirror">Mirror</option>
+            <option value="Oracle">Oracle</option>
+          </select>
+          
+          <div className="flex items-center space-x-2">
             <input
               type="range"
               min="0"
               max="1"
               step="0.1"
               value={filters.minConfidence}
-              onChange={(e) => setFilters(f => ({ ...f, minConfidence: parseFloat(e.target.value) }))}
-              className="w-full"
+              onChange={e => setFilters(f => ({ ...f, minConfidence: parseFloat(e.target.value) }))}
+              className="flex-1"
             />
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-600 dark:text-gray-400 w-12">
               {Math.round(filters.minConfidence * 100)}%
             </span>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Sort By
-            </label>
-            <select
-              value={filters.sortBy}
-              onChange={(e) => setFilters(f => ({ ...f, sortBy: e.target.value as ForecastFilters['sortBy'] }))}
-              className="w-full px-3 py-2 border rounded-lg"
-            >
-              <option value="confidence">Confidence</option>
-              <option value="decay">Decay</option>
-              <option value="drift">Drift Risk</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Search Symbols
-            </label>
+          <label className="flex items-center space-x-2">
             <input
-              type="text"
-              value={filters.searchQuery}
-              onChange={(e) => setFilters(f => ({ ...f, searchQuery: e.target.value }))}
-              placeholder="Search symbols..."
-              className="w-full px-3 py-2 border rounded-lg"
+              type="checkbox"
+              checked={filters.showDriftOnly}
+              onChange={e => setFilters(f => ({ ...f, showDriftOnly: e.target.checked }))}
+              className="rounded border-gray-300 dark:border-gray-700"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Archetype Filter
-            </label>
-            <select
-              multiple
-              value={filters.selectedArchetypes}
-              onChange={(e) => setFilters(f => ({
-                ...f,
-                selectedArchetypes: Array.from(e.target.selectedOptions, option => option.value)
-              }))}
-              className="w-full px-3 py-2 border rounded-lg"
-            >
-              {Array.from(new Set(forecasts.flatMap(f => f.archetypeInfluence))).map(archetype => (
-                <option key={archetype} value={archetype}>
-                  {archetype}
-                </option>
-              ))}
-            </select>
-          </div>
+            <span className="text-sm text-gray-700 dark:text-gray-300">Show drift risks only</span>
+          </label>
         </div>
       </div>
 
-      {/* Forecast Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredForecasts.map(forecast => (
-          <SymbolForecastCard key={forecast.symbol} forecast={forecast} />
+          <ForecastCard key={forecast.timestamp} forecast={forecast} />
         ))}
       </div>
+
+      {filteredForecasts.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">No forecasts match the current filters.</p>
+          <button
+            onClick={() => setFilters({
+              search: '',
+              archetype: '',
+              minConfidence: 0,
+              showDriftOnly: false,
+            })}
+            className="mt-4 text-blue-500 hover:text-blue-600 dark:text-blue-400"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
     </div>
   );
 } 
