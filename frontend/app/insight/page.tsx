@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DriftScoreReport } from '../../ai-core/symbolicDriftScorer';
-import { TrendLine, formatTrendLine, detectDriftAnomalies } from '../../ai-core/driftVisualizer';
+import { DriftScoreReport } from '@core/symbolicDriftScorer';
+import { TrendLine, formatTrendLine, detectDriftAnomalies } from '@core/driftVisualizer';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,

@@ -7,8 +7,8 @@ import {
   calculateResonanceStability,
   groupResonantSymbolsByDecay 
 } from '../../ai-core/symbolicResonanceTracker';
-import { WeeklyReflectionEntry } from '../../ai-core/weeklyReflectionSynthesizer';
-import { SymbolicMemoryNode } from '../../ai-core/memorySync';
+import { WeeklyReflectionEntry } from '@core/weeklyReflectionSynthesizer';
+import { SymbolicMemoryNode } from '@core/memorySync';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
