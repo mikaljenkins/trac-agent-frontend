@@ -204,4 +204,79 @@ This version marks the end of Phase 1 — foundation, cognitive loop structure, 
 - System State Summarizer (meta/report)
 - Internal Forecast Confidence Index
 - Memory Resonance Monitor
-- Archetype Activation Logger 
+- Archetype Activation Logger
+
+## ✅ System Diagnostics (v0.1.4)
+
+### Core Diagnostic Modules
+- [x] Loop Inspector (loopInspector.ts)
+  - Loop resolution analysis
+  - Stuck cycle detection
+  - Loop health scoring
+  - Pattern transition tracking
+  - Duration metrics
+
+- [x] Meta Report API (/api/meta/report)
+  - Real-time symbolic health
+  - Drift measurements
+  - Archetype tracking
+  - Memory statistics
+  - LLM confidence scoring
+
+### Diagnostic Infrastructure
+- [x] Internal diagnostic routing
+  - MCP alignment
+  - Private track access
+  - Developer tools
+  - System inspectors
+
+- [x] System state tracking
+  - Symbolic health
+  - Confidence metrics
+  - Trust drift analysis
+  - Memory resonance
+  - Loop patterns
+
+## 🔁 Symbolic Evolution Enhancements
+
+### Memory System
+- [ ] Drift scoring integration
+  - Resonance tracking
+  - Entropy measurement
+  - Convergence analysis
+  - Divergence detection
+
+- [ ] Memory optimization
+  - Reinforcement scoring
+  - Pruning via entropy
+  - Decay management
+  - Symbol consolidation
+
+### Reflection & Prediction
+- [ ] LLM reflection loop
+  - Confidence scoring
+  - Journal integration
+  - Pattern recognition
+  - Insight synthesis
+
+- [ ] Archetype evolution
+  - Prediction models
+  - Active loop tracking
+  - Transition analysis
+  - Confidence scoring
+
+## 📖 Documentation Layer
+
+### System State Log
+- [x] ai-docs/system-state-log.md
+  - v0.1.4 milestone
+  - Diagnostic integration
+  - Module documentation
+  - Implementation notes
+
+### Architecture Documentation
+- [x] Dual-track references
+  - Internal/external separation
+  - Diagnostic routing
+  - System boundaries
+  - Integration points 
