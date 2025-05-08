@@ -1,10 +1,12 @@
 import { AgentState } from '@/system/agentState';
 import { formatSymbolicPrompt } from './symbolicFrame';
 import { invokeLLM, LLMResponse } from './invokeLLM';
+import { writeLLMInvocation } from '../journal/invocations/writeLLMInvocation';
 
 /**
  * Invokes an LLM with an archetype-aligned prompt, using the unified multi-provider interface.
  * Routes through invokeLLM for provider selection and execution.
+ * Persists responses to the invocation journal for historical analysis.
  */
 export async function invokeArchetypeLLM(agentState: AgentState): Promise<LLMResponse> {
   // Format the prompt using symbolic state
@@ -26,6 +28,9 @@ export async function invokeArchetypeLLM(agentState: AgentState): Promise<LLMRes
     confidence: response.metadata?.confidence,
     provider: response.provider
   });
+
+  // Persist invocation result for reflection history
+  await writeLLMInvocation(response);
 
   return response;
 }
