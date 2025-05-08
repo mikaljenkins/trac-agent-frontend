@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { SymbolicForecast } from '../../ai-core/symbolicForecaster';
+import { SymbolicForecast } from '@/ai-core/symbolicForecaster';
 import { saveAs } from 'file-saver';
 
 interface ForecastMetadata {
