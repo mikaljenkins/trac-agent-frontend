@@ -2,6 +2,7 @@ import { AgentState } from '@/system/agentState';
 import { formatSymbolicPrompt } from './symbolicFrame';
 import { invokeLLM, LLMResponse } from './invokeLLM';
 import { writeLLMInvocation } from '../journal/invocations/writeLLMInvocation';
+import { reinforceSymbolsFromReflection } from './memorySync';
 
 /**
  * Invokes an LLM with an archetype-aligned prompt, using the unified multi-provider interface.
@@ -31,6 +32,12 @@ export async function invokeArchetypeLLM(agentState: AgentState): Promise<LLMRes
 
   // Persist invocation result for reflection history
   await writeLLMInvocation(response);
+
+  // Reinforce symbolic memory based on reflection
+  agentState.symbolicMemory = await reinforceSymbolsFromReflection(
+    response,
+    agentState.symbolicMemory
+  );
 
   return response;
 }
