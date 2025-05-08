@@ -17,10 +17,10 @@ This taskboard tracks all confirmed progress and pending objectives for the Trac
 | UI wiring to MCP (symbol input box or CLI hook) | 🟡 Scaffolded |
 | Agent trust drift visualizer | ⛔️ Not yet started |
 | Symbolic memory echo system | 🟡 Scaffolded |
-| 🔮 Predictive Modules – “Forecast archetype shifts and symbolic health” | ✅ Complete |
-| 📈 SymbolicPlotTracker – “Track symbolic health, entropy, and decay over time” | ✅ Complete |
-| 🧠 ArchetypePredictor – “Predict next likely archetype from mutation and symbolic trends” | ✅ Complete |
-| 🔁 Integration into loopMonitor.ts – “Connect forecast and plot health into agent loop” | ✅ Complete |
+| 🔮 Predictive Modules – "Forecast archetype shifts and symbolic health" | ✅ Complete |
+| 📈 SymbolicPlotTracker – "Track symbolic health, entropy, and decay over time" | ✅ Complete |
+| 🧠 ArchetypePredictor – "Predict next likely archetype from mutation and symbolic trends" | ✅ Complete |
+| 🔁 Integration into loopMonitor.ts – "Connect forecast and plot health into agent loop" | ✅ Complete |
 
 ---
 
@@ -120,7 +120,7 @@ Then wire this loop into the CLI or a basic UI input box.
 
 ---
 
-_Note: “🟡 Scaffolded” means the feature is partially implemented or has a working stub, but is not yet fully functional or integrated._
+_Note: "🟡 Scaffolded" means the feature is partially implemented or has a working stub, but is not yet fully functional or integrated._
 
 _This file is symbolic. Update before each feature handoff, dev check-in, or system checkpoint._
 
@@ -152,4 +152,20 @@ This version marks the end of Phase 1 — foundation, cognitive loop structure, 
 ## ✅ Logging & Mutation Infrastructure
 - [x] logMutation.ts API route
 - [x] mutationLog-YYYY-MM-DD.json
-- [x] CLI + trace viewer flow 
+- [x] CLI + trace viewer flow
+
+## Multi-LLM Overlay System
+
+### Core Modules
+- [ ] `agentState.ts` — Tracks mood, archetype, memory loop, and drift ❗️(Already exists, extend with multi-LLM integration fields)
+- [ ] `symbolicFrame.ts` — Converts internal state into structured symbolic prompts (NEW)
+- [ ] `modelRouter.ts` — Task-aware model selector for local (Phi-2, Mistral) and OpenAI endpoints (NEW)
+- [ ] `invokeLLM.ts` — Unified executor for all LLM backends (NEW)
+- [ ] `responseInterpreter.ts` — Scans LLM outputs for symbolic markers, consistency, and drift metrics (NEW)
+- [ ] `memorySync.ts` — Updates loop memory and symbolic drift markers in `agentState.ts` (NEW)
+- [ ] `fallbackPolicy.ts` — Enables offline resilience and symbolic recall from cache (NEW)
+
+### Symbolic Flow Alignment
+- [ ] Wire `symbolicFrame` + `modelRouter` into archetypeLLM invocation pipeline
+- [ ] Ensure every reflection loop stores output in `memorySync`
+- [ ] Allow `modelRouter` to switch models based on `trustLevel`, `entropy`, or agent urgency flags 
