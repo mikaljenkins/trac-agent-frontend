@@ -11,10 +11,38 @@ const RANGE_MS: Record<TimeRange, number> = {
   year: 365 * 24 * 60 * 60 * 1000
 };
 
+// In-memory cache with TTL
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const reflectionCache = new Map<string, CacheEntry<WeeklyReflectionEntry[]>>();
+
+function validateReflectionEntry(entry: unknown): entry is WeeklyReflectionEntry {
+  if (!entry || typeof entry !== 'object') return false;
+  
+  const e = entry as Partial<WeeklyReflectionEntry>;
+  return (
+    typeof e.timestamp === 'string' &&
+    Array.isArray(e.dominantSymbols) &&
+    e.dominantSymbols.every(s => typeof s === 'string') &&
+    typeof e.summary === 'string'
+  );
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const range = (searchParams.get('range') || 'month') as TimeRange;
+    
+    // Check cache
+    const cacheKey = `reflections:${range}`;
+    const cached = reflectionCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data);
+    }
     
     // Load reflections from journal directory
     const journalDir = path.join(process.cwd(), 'journal', 'weekly');
@@ -27,19 +55,36 @@ export async function GET(request: NextRequest) {
     
     // Load and parse reflection entries
     const reflections: WeeklyReflectionEntry[] = [];
+    const now = new Date();
+    const rangeInMs = RANGE_MS[range];
+    
     for (const file of reflectionFiles) {
-      const content = await fs.readFile(path.join(journalDir, file), 'utf-8');
-      const entry = JSON.parse(content) as WeeklyReflectionEntry;
-      
-      // Apply time range filter
-      const entryDate = new Date(entry.timestamp);
-      const now = new Date();
-      const rangeInMs = RANGE_MS[range];
-      
-      if (now.getTime() - entryDate.getTime() <= rangeInMs) {
-        reflections.push(entry);
+      try {
+        const content = await fs.readFile(path.join(journalDir, file), 'utf-8');
+        const entry = JSON.parse(content);
+        
+        // Validate entry structure
+        if (!validateReflectionEntry(entry)) {
+          console.warn(`Invalid reflection entry in ${file}, skipping`);
+          continue;
+        }
+        
+        // Apply time range filter
+        const entryDate = new Date(entry.timestamp);
+        if (now.getTime() - entryDate.getTime() <= rangeInMs) {
+          reflections.push(entry);
+        }
+      } catch (err) {
+        console.error(`Failed to process reflection file ${file}:`, err);
+        continue; // Skip invalid files
       }
     }
+    
+    // Update cache
+    reflectionCache.set(cacheKey, {
+      data: reflections,
+      timestamp: Date.now()
+    });
     
     return NextResponse.json(reflections);
   } catch (error) {
