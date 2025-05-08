@@ -4,10 +4,9 @@ import path from 'path';
 
 export interface SymbolicMemoryNode {
   label: string;
-  relevanceScore: number;
+  decayScore: number;
+  reinforcementScore: number;
   lastReinforced?: string;
-  reinforcementCount: number;
-  decayRate: number;
 }
 
 export interface ReinforcementEvent {
@@ -25,79 +24,70 @@ export interface ReinforcementEvent {
 function extractSymbolsFromText(text: string): string[] {
   // Simple keyword extraction - replace with better NLP
   const words = text.toLowerCase().split(/\W+/);
-  const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
+  const symbols = new Set<string>();
   
-  return words
-    .filter(word => word.length > 3 && !stopWords.has(word))
-    .filter((word, index, self) => self.indexOf(word) === index); // unique
+  // Filter for potential symbolic keywords (3+ chars, not common words)
+  const commonWords = new Set(['the', 'and', 'that', 'this', 'with', 'from']);
+  words.forEach(word => {
+    if (word.length >= 3 && !commonWords.has(word)) {
+      symbols.add(word);
+    }
+  });
+  
+  return Array.from(symbols);
 }
 
 /**
- * Updates symbolic memory based on LLM reflection content.
- * Reinforces matching symbols and optionally adds new ones.
+ * Reinforces symbolic memory based on LLM reflection content.
+ * Updates decay scores and tracks reinforcement events.
  */
 export async function reinforceSymbolsFromReflection(
   response: LLMResponse,
   currentMemory: SymbolicMemoryNode[]
-): Promise<SymbolicMemoryNode[]> {
+): Promise<{
+  updatedMemory: SymbolicMemoryNode[];
+  reinforcementEvents: ReinforcementEvent[];
+}> {
   const symbols = extractSymbolsFromText(response.text);
-  const now = new Date().toISOString();
+  const reinforcementEvents: ReinforcementEvent[] = [];
   const updatedMemory = [...currentMemory];
-  
-  // Track reinforcement events for logging
-  const reinforcements: ReinforcementEvent[] = [];
 
-  // Update existing memory nodes
-  for (const node of updatedMemory) {
-    if (symbols.includes(node.label.toLowerCase())) {
-      // Reinforce matching symbol
-      node.relevanceScore = Math.min(1, node.relevanceScore + 0.1);
-      node.lastReinforced = now;
-      node.reinforcementCount++;
-      node.decayRate = Math.max(0.1, node.decayRate - 0.05);
-
-      reinforcements.push({
-        timestamp: now,
-        symbol: node.label,
-        source: 'llm_reflection',
-        confidence: response.metadata?.confidence ?? 0.5,
-        context: response.text.slice(0, 100) + '...'
-      });
-    }
-  }
-
-  // Add new symbols if they appear multiple times
-  const symbolCounts = symbols.reduce((acc, symbol) => {
-    acc[symbol] = (acc[symbol] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  for (const [symbol, count] of Object.entries(symbolCounts)) {
-    if (count >= 2 && !updatedMemory.some(node => node.label.toLowerCase() === symbol)) {
-      updatedMemory.push({
+  // Process each extracted symbol
+  for (const symbol of symbols) {
+    // Find matching memory node or create new one
+    let node = updatedMemory.find(n => n.label === symbol);
+    if (!node) {
+      node = {
         label: symbol,
-        relevanceScore: 0.3,
-        lastReinforced: now,
-        reinforcementCount: 1,
-        decayRate: 0.5
-      });
-
-      reinforcements.push({
-        timestamp: now,
-        symbol,
-        source: 'llm_reflection',
-        confidence: response.metadata?.confidence ?? 0.5,
-        context: response.text.slice(0, 100) + '...'
-      });
+        decayScore: 1.0,
+        reinforcementScore: 0
+      };
+      updatedMemory.push(node);
     }
+
+    // Calculate reinforcement based on LLM confidence
+    const confidence = response.metadata?.confidence ?? 0.5;
+    const reinforcement = 0.1 * confidence; // Scale reinforcement by confidence
+
+    // Update node scores
+    node.decayScore = Math.max(0, node.decayScore - reinforcement);
+    node.reinforcementScore = (node.reinforcementScore || 0) + reinforcement;
+    node.lastReinforced = new Date().toISOString();
+
+    // Log reinforcement event
+    reinforcementEvents.push({
+      timestamp: node.lastReinforced,
+      symbol: node.label,
+      source: 'llm_reflection',
+      confidence,
+      context: response.text.slice(0, 100) + '...' // Store snippet of context
+    });
   }
 
   // Log reinforcement events
-  if (reinforcements.length > 0) {
-    await logReinforcementEvents(reinforcements);
-  }
+  await logReinforcementEvents(reinforcementEvents);
 
-  return updatedMemory;
+  return { updatedMemory, reinforcementEvents };
 }
 
 /**
@@ -110,6 +100,7 @@ async function logReinforcementEvents(events: ReinforcementEvent[]): Promise<voi
   const filePath = path.join(journalDir, fileName);
 
   try {
+    // Ensure directory exists
     await fs.mkdir(journalDir, { recursive: true });
 
     // Read existing events if any

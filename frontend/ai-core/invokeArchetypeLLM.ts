@@ -34,10 +34,13 @@ export async function invokeArchetypeLLM(agentState: AgentState): Promise<LLMRes
   await writeLLMInvocation(response);
 
   // Reinforce symbolic memory based on reflection
-  agentState.symbolicMemory = await reinforceSymbolsFromReflection(
+  const { updatedMemory } = await reinforceSymbolsFromReflection(
     response,
     agentState.symbolicMemory
   );
+
+  // Update agent state with reinforced memory
+  agentState.symbolicMemory = updatedMemory;
 
   return response;
 }
