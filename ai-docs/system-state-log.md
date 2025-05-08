@@ -71,3 +71,110 @@ This update closes the full symbolic perception → mutation loop, ensuring that
 
 **Rationale:**
 The 🟡 Scaffolded status provides clarity for developers and strategists, distinguishing between features that are in progress and those that are not yet started. This improves planning, handoff, and auditability for all future phases of TracAgent's evolution. 
+
+## 🧠 Diagnostic Layer Integration (v0.1.4)
+
+### Core Diagnostic Modules
+
+#### Loop Inspector (loopInspector.ts)
+- **Purpose**: Track and analyze agent loop cycles
+- **Key Functions**:
+  - `trackCompletedLoops`: Detailed loop cycle reports
+  - `getStuckLoops`: Identify unresolved patterns
+  - `summarizeRecentLoopChanges`: Track loop transitions
+  - `calculateLoopHealth`: Overall loop metrics
+- **Outputs**:
+  - Loop type categorization
+  - Entry/exit timestamps
+  - Duration analysis
+  - Resolution tracking
+  - Pattern recognition
+
+#### Meta Report API (/api/meta/report)
+- **Purpose**: Centralized system state diagnostics
+- **Key Metrics**:
+  - Current archetype + history
+  - Memory health statistics
+  - Drift measurements
+  - LLM confidence scores
+  - Loop health indicators
+- **Data Sources**:
+  - Agent state
+  - Weekly reflections
+  - Symbolic memory
+  - Drift reports
+  - Interaction logs
+
+### Diagnostic Layer Architecture
+
+#### Internal Diagnostic Loop
+- **Access**: Private (developer/internal)
+- **Components**:
+  - Full symbolic trace logs
+  - Memory state inspection
+  - Archetype diagnostics
+  - Loop pattern analysis
+  - LLM confidence tracking
+- **Tools**:
+  - Developer dashboards
+  - JSON journaling
+  - CLI diagnostics
+  - System inspectors
+
+#### External Interaction Loop
+- **Access**: Public (user-facing)
+- **Components**:
+  - Condensed insights
+  - Pattern summaries
+  - Progress tracking
+  - Actionable recommendations
+- **Interface**:
+  - Clean UI
+  - Insight cards
+  - Timeline views
+  - Progress indicators
+
+### Integration Points
+
+#### Symbolic Indicators
+- **LLM Confidence**:
+  - Tracks model reliability
+  - Influences archetype selection
+  - Guides loop transitions
+  - Affects memory reinforcement
+- **Memory Health**:
+  - Decay tracking
+  - Reinforcement scoring
+  - Symbolic drift analysis
+  - Resonance visualization
+- **Loop Patterns**:
+  - Cycle completion rates
+  - Stuck loop detection
+  - Transition analysis
+  - Health scoring
+
+#### System State Tracking
+- **Archetype Evolution**:
+  - Current state
+  - Historical patterns
+  - Confidence scoring
+  - Transition triggers
+- **Memory Statistics**:
+  - Total symbols
+  - Fading count
+  - Reinforced nodes
+  - Average decay
+- **Drift Metrics**:
+  - Convergence
+  - Divergence
+  - Entropy
+  - Timestamp tracking
+
+### Implementation Notes
+- Diagnostic layer serves as bridge between internal and external systems
+- All metrics feed into system state log for historical tracking
+- Confidence scores influence both loops but with different granularity
+- Memory health impacts both diagnostic and interaction layers
+
+> This section documents the integration of diagnostic modules into TracAgent's dual-track architecture.
+> Logged by system-state-log in alignment with milestone v0.1.4. 

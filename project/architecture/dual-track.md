@@ -1,5 +1,7 @@
 # 🧭 TracAgent Dual-Track Architecture (v0.1.4)
 
+🔗 Canonical diagnostic details now live in ai-docs/system-state-log.md (v0.1.4 and beyond)
+
 ## Purpose
 To maintain long-term alignment between TracAgent's private diagnostic intelligence and future public-facing products through a dual-track system architecture.
 
