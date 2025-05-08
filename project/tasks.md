@@ -169,3 +169,39 @@ This version marks the end of Phase 1 — foundation, cognitive loop structure, 
 - [ ] Wire `symbolicFrame` + `modelRouter` into archetypeLLM invocation pipeline
 - [ ] Ensure every reflection loop stores output in `memorySync`
 - [ ] Allow `modelRouter` to switch models based on `trustLevel`, `entropy`, or agent urgency flags 
+
+## Symbolic Self-Awareness & Diagnostics
+
+### Core Components
+- Symbolic Memory System
+  - Memory nodes and decay tracking
+  - Reinforcement scoring
+  - Symbolic drift analysis
+  - Resonance visualization
+
+- Loop Inspector
+  - Cycle analysis and health scoring
+  - Stuck loop detection
+  - Loop transition tracking
+  - Pattern resolution metrics
+
+- Meta Report API
+  - Centralized symbolic diagnostics
+  - Memory health monitoring
+  - Archetype evolution tracking
+  - LLM confidence scoring
+  - System state summarization
+
+### Diagnostic Tools
+- Weekly Reflection Synthesis
+- Symbolic Drift Analysis
+- Memory Health Monitoring
+- Loop Pattern Analysis
+- Archetype Evolution Tracking
+
+### Monitoring Systems
+- Symbolic Loop Tracker (loopInspector.ts)
+- System State Summarizer (meta/report)
+- Internal Forecast Confidence Index
+- Memory Resonance Monitor
+- Archetype Activation Logger 
