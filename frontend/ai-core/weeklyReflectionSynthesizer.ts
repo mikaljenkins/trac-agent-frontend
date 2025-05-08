@@ -21,10 +21,12 @@ export async function getMemoryChanges(days: number): Promise<SymbolicMemoryNode
 }
 
 import { SymbolicMutation } from '@/types/trace';
-import { AgentState } from '@/system/agentState';
+import { AgentState } from './agentState';
 import { compareWeeklyReflections, SymbolicDiff } from './symbolicDiffer';
-import { invokeArchetypeLLM, useLLMInvocation, LLMInvocationResult } from './invokeArchetypeLLM';
+import { invokeArchetypeLLM } from './invokeArchetypeLLM';
 import { logLLMInvocation } from '../journal/invocations/logLLMInvocation';
+import { generateDriftReport } from './symbolicDriftScorer';
+import { adjustDecayRatesFromDrift } from './symbolicEntropyTuner';
 
 export interface SymbolicReflectionLog {
   timestamp: string;
@@ -144,4 +146,41 @@ export async function synthesizeWeeklyReflectionWithDrift(agentState: AgentState
     diff,
     llmInvocation
   };
+}
+
+/**
+ * Performs weekly reflection and memory tuning.
+ * Analyzes drift, adjusts decay rates, and synthesizes insights.
+ */
+export async function performWeeklyReflection(agentState: AgentState): Promise<void> {
+  // Generate drift analysis
+  const driftReport = await generateDriftReport(agentState.symbolicMemory);
+
+  // Adjust decay rates based on drift
+  const { tunedMemory, prunedCount, reinforcedCount } = adjustDecayRatesFromDrift(
+    agentState.symbolicMemory,
+    driftReport
+  );
+
+  // Update agent state with tuned memory
+  agentState.symbolicMemory = tunedMemory;
+
+  // Log memory tuning results
+  console.log('🧠 Weekly Memory Tuning:', {
+    prunedNodes: prunedCount,
+    reinforcedNodes: reinforcedCount,
+    convergence: driftReport.convergence,
+    divergence: driftReport.divergence,
+    dominantSymbols: driftReport.dominantSymbols
+  });
+
+  // Synthesize reflection with tuned memory
+  const reflection = await invokeArchetypeLLM(agentState);
+
+  // Log reflection insights
+  console.log('📝 Weekly Reflection:', {
+    text: reflection.text,
+    confidence: reflection.metadata?.confidence,
+    provider: reflection.provider
+  });
 } 
