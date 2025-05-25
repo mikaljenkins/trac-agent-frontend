@@ -7,6 +7,7 @@
  * - Inline diffs for each changed file
  * - Timestamp filtering via CLI flags
  * - Audit logging for traceability
+ * - Optional commentary for drift analysis
  */
 
 import { diffLines } from 'diff';
@@ -41,7 +42,14 @@ function printDiff(title: string, oldText: string, newText: string) {
   }
 }
 
-async function compareSnapshots(fromTime?: string, toTime?: string) {
+function determineDriftTag(changedFiles: string[]): string {
+  if (changedFiles.includes("README.md")) return "drift::readme";
+  if (changedFiles.includes("docs/ai/architecture-overview.md")) return "drift::architecture";
+  if (changedFiles.includes("docs/ai/symbolic-module-map.md")) return "drift::modules";
+  return "drift::misc";
+}
+
+async function compareSnapshots(fromTime?: string, toTime?: string, comment?: string) {
   const snapshots = await readSnapshots();
   const filtered = snapshots.filter(snap => {
     const t = new Date(snap.timestamp).getTime();
@@ -75,7 +83,8 @@ async function compareSnapshots(fromTime?: string, toTime?: string) {
     input: { fromTime, toTime },
     result: {
       summary: `Compared symbolic drift snapshots from ${fromTime || 'latest'} to ${toTime || 'latest'}`,
-      symbolicTag: 'drift::manual-inspection'
+      symbolicTag: determineDriftTag(changedFiles),
+      ...(comment && { commentary: comment })
     },
     metadata: { 
       domain: 'documentation',
@@ -91,10 +100,12 @@ async function compareSnapshots(fromTime?: string, toTime?: string) {
 const [,, ...args] = process.argv;
 const fromFlag = args.indexOf('--from');
 const toFlag = args.indexOf('--to');
+const commentFlag = args.indexOf('--comment');
 
 const fromTime = fromFlag !== -1 ? args[fromFlag + 1] : undefined;
 const toTime = toFlag !== -1 ? args[toFlag + 1] : undefined;
+const comment = commentFlag !== -1 ? args[commentFlag + 1] : undefined;
 
-compareSnapshots(fromTime, toTime).catch(err => {
+compareSnapshots(fromTime, toTime, comment).catch(err => {
   console.error('💥 Error during snapshot comparison:', err);
 }); 

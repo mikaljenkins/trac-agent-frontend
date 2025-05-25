@@ -9,6 +9,7 @@ interface LogEventParams {
   result: {
     summary: string;
     symbolicTag: string;
+    commentary?: string;
   };
   metadata: {
     domain: string;
@@ -21,6 +22,7 @@ interface LogEventParams {
     comparisonType?: string;
     filesCompared?: string[];
     changedFiles?: string[];
+    driftScore?: number;
   };
 }
 
@@ -43,6 +45,9 @@ export function logEvent(params: LogEventParams): void {
     console.log(`Trace: ${params.trace.join(' → ')}`);
   }
   console.log(`Tag: ${params.result.symbolicTag}`);
+  if (params.result.commentary) {
+    console.log(`Commentary: ${params.result.commentary}`);
+  }
   console.log(`Domain: ${params.metadata.domain} (${params.metadata.status})`);
 }
 
