@@ -1,11 +1,13 @@
+import type { ImprovementCandidate } from './symbolic';
+
 /**
- * Represents user input to the agent
+ * ❗ SYMBOLIC SYSTEM DIRECTIVE ❗
+ *
+ * This module participates in Trac's symbolic reasoning system.
+ * All additions below are made for alignment integrity.
+ * DO NOT replace or strip symbolic fields (e.g., timestamp, identityAlignment).
+ * They serve reflective journaling and resonance tracking.
  */
-export interface AgentInput {
-  content: string;
-  timestamp: string;
-  metadata?: Record<string, any>;
-}
 
 /**
  * Represents the result of an agent interaction
@@ -19,21 +21,38 @@ export interface AgentResult {
 }
 
 /**
+ * Represents user input to the agent
+ */
+export interface AgentInput {
+  content: string;
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
+
+/**
  * Represents a logged event in the agent's memory
  */
 export interface LoopEvent {
   input: AgentInput;
   result: AgentResult;
-  reflection?: Array<{
-    sourceModule: string;
-    issue: string;
-    proposedFix?: string;
-    triggerCount: number;
-    confidenceTrend: number[];
-  }>;
+  reflection?: ImprovementCandidate[];
   stateSnapshot: AgentState;
   timestamp: string;
-  trace?: string[]; // Array of trace IDs for event tracking
+  trace?: string[]; 
+}
+
+/**
+ * Symbolic performance and resonance metrics
+ */
+export interface AgentMetrics {
+  trust?: number;
+  loops?: number;
+  reasoning?: number;
+  emotional?: number;
+  symbolicAlignment?: number;
+  resonanceScore?: number;
+  dreamCoherence?: number;
+  desireClarity?: number;
 }
 
 /**
@@ -45,28 +64,22 @@ export interface AgentState {
   sessionThread: Array<{
     input: string;
     reflection: any;
+    result?: AgentResult;
   }>;
-  pendingImprovements?: Array<{
-    sourceModule: string;
-    issue: string;
-    proposedFix?: string;
-    triggerCount: number;
-    confidenceTrend: number[];
-  }>;
+  pendingImprovements?: ImprovementCandidate[];
   metadata: {
     startTime: string;
     interactionCount: number;
     lastReflectionTime?: string;
+    identityAlignment?: number; // symbolic self-coherence metric
   };
+  metrics?: AgentMetrics; // optional symbolic performance tracker
+  timestamp?: string; // Supports symbolic journaling, resonance snapshots, and time-aware decisions
 }
 
-/**
- * Represents a potential improvement identified during reflection
- */
-export interface ImprovementCandidate {
-  sourceModule?: string;
-  issue?: string;
-  proposedFix?: string;
-  triggerCount?: number;
-  confidenceTrend?: number[];
-} 
+export interface AgentMetadata {
+  startTime: string;
+  interactionCount: number;
+  lastReflectionTime?: string;
+  identityAlignment?: number; // symbolic self-coherence metric
+}
