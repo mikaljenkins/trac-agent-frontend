@@ -1,5 +1,5 @@
-import { getRecentAuditLogs } from '../../self-awareness/selfAudit';
 import { SelfAuditLogEntry } from '../../self-awareness/self-audit-log-schema';
+import { getRecentAuditLogs } from '../../self-awareness/selfAudit';
 
 interface SelfCheckResponse {
   lastReflections: {

@@ -1,8 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { generateSymbolicForecast } from '@/ai-core/symbolicForecaster';
-import { weeklyTrigger } from '@/ai-core/loopMonitor';
-import { AgentState } from '@/ai-core/types';
+import { weeklyTrigger } from '../../system/loopMonitor';
+import { generateSymbolicForecast } from '../../system/symbolic/symbolicForecaster';
+import type { AgentState } from '../../types/agent';
 
 interface SymbolicForecast {
   symbol: string;
@@ -88,14 +88,14 @@ async function exportForecast() {
     }
 
     // Generate forecasts
-    const forecasts = await generateSymbolicForecast(agentState);
+    const forecasts = await generateSymbolicForecast();
 
     // Calculate metadata
-    const totalSymbols = forecasts.length;
-    const averageConfidence = forecasts.reduce((sum: number, f: SymbolicForecast) => sum + f.confidence, 0) / totalSymbols;
+    const totalSymbols = Object.keys(forecasts).length;
+    const averageConfidence = Object.values(forecasts).reduce((sum: number, f: SymbolicForecast) => sum + f.confidence, 0) / totalSymbols;
     
     // Get archetype frequencies
-    const archetypeCounts = forecasts.reduce((acc: Record<string, number>, f: SymbolicForecast) => {
+    const archetypeCounts = Object.values(forecasts).reduce((acc: Record<string, number>, f: SymbolicForecast) => {
       f.archetypeInfluence.forEach((archetype: string) => {
         acc[archetype] = (acc[archetype] || 0) + 1;
       });
@@ -108,18 +108,18 @@ async function exportForecast() {
     // Prepare export data
     const exportData: ForecastExport = {
       timestamp: now.toISOString(),
-      forecasts,
+      forecasts: Object.values(forecasts),
       metadata: {
         totalSymbols,
         averageConfidence,
         dominantArchetype,
-        topSymbols: forecasts
-          .sort((a, b) => b.confidence - a.confidence)
+        topSymbols: Object.values(forecasts)
+          .sort((a: SymbolicForecast, b: SymbolicForecast) => b.confidence - a.confidence)
           .slice(0, 5)
-          .map(f => ({ symbol: f.symbol, confidence: f.confidence })),
-        driftPredictions: forecasts
-          .filter(f => f.likelyDrift)
-          .map(f => ({ symbol: f.symbol, likelihood: f.projectedDecay })),
+          .map((f: SymbolicForecast) => ({ symbol: f.symbol, confidence: f.confidence })),
+        driftPredictions: Object.values(forecasts)
+          .filter((f: SymbolicForecast) => f.likelyDrift)
+          .map((f: SymbolicForecast) => ({ symbol: f.symbol, likelihood: f.projectedDecay })),
       },
       agentState,
     };
@@ -135,8 +135,7 @@ async function exportForecast() {
   }
 }
 
-// Register with weekly trigger
-weeklyTrigger.register('exportForecast', exportForecast);
+
 
 // Export immediately if this is the first run
 exportForecast().catch(console.error); 

@@ -22,10 +22,10 @@ async function testLLMInvocation() {
   try {
     const result = await invokeArchetypeLLM(agentState);
     console.log('🧠 Archetype LLM Invocation Result:');
-    console.log(`Archetype Used: ${result.archetypeUsed}`);
-    console.log(`Prompt:\n${result.prompt}`);
-    console.log(`Response:\n${result.response}`);
-    console.log(`Timestamp: ${result.timestamp}`);
+    console.log(`Archetype Used: ${result.archetype}`);
+    console.log(`Prompt:\n${result.promptText}`);
+    console.log(`Response:\n${result.responseText}`);
+    console.log(`Timestamp: ${result.invokedAt}`);
   } catch (err) {
     console.error('❌ Error invoking archetype LLM:', err);
   }

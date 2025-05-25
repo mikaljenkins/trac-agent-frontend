@@ -1,4 +1,3 @@
-import { TheoryEntry } from './theoryLog';
 
 export interface SandboxResponse {
   id: string;

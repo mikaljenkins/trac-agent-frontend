@@ -1,5 +1,5 @@
-import { logPatternMatches } from './theoryLog';
 import { SandboxResponse } from './sandboxResponses';
+import { logPatternMatches } from './theoryLog';
 
 interface AgentState {
   selfLoopCount: number;

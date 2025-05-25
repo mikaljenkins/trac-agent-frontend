@@ -1,6 +1,6 @@
-import { synthesizeWeeklyReflection } from '../../frontend/ai-core/weeklyReflectionSynthesizer';
-import { writeWeeklyReflection } from '../../frontend/journal/weekly/writeWeeklyReflection';
-import { state as agentState } from '../../src/system/agentState';
+import { synthesizeWeeklyReflection } from '../frontend/ai-core/weeklyReflectionSynthesizer';
+import { writeWeeklyReflection } from '../frontend/journal/weekly/writeWeeklyReflection';
+import { state as agentState } from '../src/system/agentState';
 
 function formatTimestamp(date: Date): string {
   return date.toISOString().split('T')[0];

@@ -1,0 +1,11 @@
+{
+  "name": "trac-agent-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-modules system/symbolic/runFullSymbolicTest.js"
+  },
+  "dependencies": {
+    "typescript": "^5.0.0"
+  }
+} 

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022"],
+    "jsx": "react",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["frontend/*"],
+      "@system/*": ["frontend/system/*"],
+      "@state/*": ["frontend/state/*"]
+    }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "ES2022"
+    }
+  },
+  "include": ["frontend"],
+  "exclude": ["node_modules"]
+}

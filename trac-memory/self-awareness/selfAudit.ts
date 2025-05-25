@@ -1,5 +1,5 @@
+import { addAuditLog, clearAuditLogs, getAuditLogs } from './auditLogStore';
 import { SelfAuditLogEntry } from './self-audit-log-schema';
-import { addAuditLog, getAuditLogs, clearAuditLogs } from './auditLogStore';
 
 /**
  * Logs a self-audit entry to the system

@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
-import fetch from 'node-fetch';
 import chalk from 'chalk';
+import fetch from 'node-fetch';
 
 const API_URL = 'http://localhost:3000/api/mutate';
 

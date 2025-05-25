@@ -1,8 +1,6 @@
 'use client'
-
-import { useState, useEffect } from 'react';
-import { SymbolicForecast } from '@/ai-core/symbolicForecaster';
 import { saveAs } from 'file-saver';
+import React, { useEffect, useState } from 'react';
 
 interface ForecastMetadata {
   timestamp: string;
@@ -17,6 +15,12 @@ interface ForecastMetadata {
     symbol: string;
     likelihood: number;
   }>;
+}
+
+interface SymbolicForecast {
+  symbol: string;
+  confidence: number;
+  prediction: string;
 }
 
 interface ForecastExport {
@@ -42,7 +46,6 @@ function ForecastCard({ forecast }: { forecast: ForecastExport }) {
           {metadata.totalSymbols} symbols
         </span>
       </div>
-
       <div className="space-y-4">
         <div>
           <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Top Symbols</h4>

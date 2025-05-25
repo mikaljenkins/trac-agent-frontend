@@ -1,135 +1,91 @@
-// Monitors TracAgent's cognitive loop
-// Logs when dreamDigestor triggers thoughts
-// Logs when thoughts trigger introspection
-// Logs awakening moments and trust updates
+import * as fs from 'fs/promises';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
+import type { LoopEvent } from '../../types/agent';
 
-import { AgentState } from '@/system/agentState';
-import { analyzeSymbolicHealth } from '../../frontend/ai-core/symbolicPlotTracker';
-import { predictNextArchetype } from '../../frontend/ai-core/archetypePredictor';
-import type { SymbolicMemoryNode } from '../../frontend/ai-core/symbolicPlotTracker';
-import { shouldTriggerWeekly } from './loop/weeklyTrigger';
-import { synthesizeWeeklyReflection } from '../../frontend/ai-core/weeklyReflectionSynthesizer';
-import { writeWeeklyReflection } from '../../frontend/journal/weekly/writeWeeklyReflection';
-
-export interface LoopEvent {
-  input: any;
-  result: any;
-  trace: string[];
-  stateSnapshot: AgentState;
-  timestamp?: string;
-  source?: string;
-  action?: string;
-  payload?: any;
-}
-
-const loopLog: LoopEvent[] = [];
-
-export async function logEvent(event: LoopEvent): Promise<string> {
-  const traceId = `trace-${Date.now()}`;
-  
-  // Add timestamp if not provided
-  if (!event.timestamp) {
-    event.timestamp = new Date().toISOString();
+/**
+ * Removes circular references from an object for safe JSON stringification
+ */
+function removeCircular(obj: any, seen = new WeakSet()): any {
+  // Handle null and non-objects
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
   }
 
-  // Log the event (in production this would write to a file or database)
-  console.log(`[LoopMonitor] Event ${traceId}:`, event);
+  // Handle circular reference
+  if (seen.has(obj)) {
+    return '[Circular]';
+  }
 
-  return traceId;
+  // Add object to seen set
+  seen.add(obj);
+
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    return obj.map(item => removeCircular(item, seen));
+  }
+
+  // Handle objects
+  const result: any = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = removeCircular(obj[key], seen);
+    }
+  }
+  return result;
 }
 
-export const logLoopEvent = (event: LoopEvent) => {
-  const timestampedEvent = {
-    ...event,
-    timestamp: event.timestamp || new Date().toISOString()
+/**
+ * Generates a unique trace ID for event tracking
+ */
+function generateTraceId(): string {
+  return Math.random().toString(36).substring(2, 10);
+}
+
+/**
+ * Logs an event to the agent's memory file with safe handling of circular references
+ */
+export async function logEvent(event: LoopEvent): Promise<string> {
+  const traceId = generateTraceId();
+  const safeEvent = removeCircular(event);
+
+  const logPath = join(process.cwd(), 'logs', 'agent-memory.json');
+  const logEntry = {
+    traceId,
+    timestamp: new Date().toISOString(),
+    event: safeEvent
   };
-  loopLog.push(timestampedEvent);
-  console.log(`[LoopEvent] ${timestampedEvent.timestamp}`, timestampedEvent);
-};
 
-export const getLoopLog = (timeframe: { start?: string; end?: string } = {}) => {
-  const { start, end } = timeframe;
-  return loopLog.filter(event => {
-    const eventTime = new Date(event.timestamp!).getTime();
-    if (start && new Date(start).getTime() > eventTime) return false;
-    if (end && new Date(end).getTime() < eventTime) return false;
-    return true;
-  });
-};
+  try {
+    // Ensure logs directory exists
+    await mkdir(join(process.cwd(), 'logs'), { recursive: true });
 
-export const clearLoopLog = () => {
-  loopLog.length = 0;
-};
+    // Read existing logs or create new array
+    let logs: any[] = [];
+    try {
+      const existing = await fs.readFile(logPath, 'utf-8');
+      logs = JSON.parse(existing);
+    } catch (err) {
+      // File doesn't exist or is invalid JSON, start with empty array
+    }
 
-// Indicates the level of reasoning risk detected in the agent's loop
-export type ReasoningAlertLevel = 'low' | 'medium' | 'high';
+    // Add new log entry and write back
+    logs.push(logEntry);
+    await fs.writeFile(logPath, JSON.stringify(logs, null, 2), 'utf-8');
 
-// Placeholder for session state type
-export interface SessionState {
-  agentState: AgentState;
-  // ...other session fields
-}
-
-/**
- * Detects reasoning loop anomalies such as stagnation, overthinking, or disengagement.
- * @param session The current session state
- * @returns ReasoningAlertLevel
- */
-export function detectReasoningLoopAnomalies(session: SessionState): ReasoningAlertLevel {
-  // TODO: Implement actual anomaly detection logic
-  return 'low';
-}
-
-/**
- * Call this at the end of each symbolic cycle to update symbolic health and archetype prediction.
- * @param agentState The current agent state
- * @param symbols The current array of SymbolicMemoryNode
- * @param recentMutations The recent SymbolicMutation[]
- */
-export function updateSymbolicForecast(agentState: AgentState, symbols: SymbolicMemoryNode[], recentMutations: any[]) {
-  // 1. Analyze symbolic health
-  const health = analyzeSymbolicHealth(symbols);
-  agentState.lastSymbolicHealth = health;
-  logLoopEvent({
-    input: null,
-    result: health,
-    trace: [],
-    stateSnapshot: agentState,
-    timestamp: new Date().toISOString(),
-    source: 'symbolicPlotTracker',
-    action: 'symbolicHealthSnapshot',
-    payload: health
-  });
-
-  // 2. Predict next archetype
-  const predicted = predictNextArchetype(agentState, recentMutations) as import('../../frontend/ai-core/archetypes/archetypeRouter').ArchetypeName;
-  agentState.predictedArchetype = predicted;
-  logLoopEvent({
-    input: null,
-    result: predicted,
-    trace: [],
-    stateSnapshot: agentState,
-    timestamp: new Date().toISOString(),
-    source: 'archetypePredictor',
-    action: 'archetypePrediction',
-    payload: predicted
-  });
-
-  // TODO: UI hook — display predictedArchetype and entropy in Trace Viewer UI panel
-}
-
-// At the end of the main agent loop or symbolic cycle:
-export async function maybeRunWeeklyReflection(agentState: AgentState) {
-  if (shouldTriggerWeekly()) {
-    const reflection = await synthesizeWeeklyReflection(agentState);
-    // Map to WeeklyReflectionEntry if needed
-    const entry = {
-      weekEnding: new Date().toISOString().split('T')[0],
-      dominantSymbols: reflection.dominantSymbols || [],
-      archetypeForecast: reflection.predictedNextArchetype || 'Unknown',
-      symbolicEntropyLevel: 0, // TODO: Integrate with entropy tracking if available
-      narrative: reflection.summary || ''
-    };
-    await writeWeeklyReflection(entry);
+    return traceId;
+  } catch (err) {
+    console.error('Failed to write event log:', err);
+    throw err; // Re-throw to allow caller to handle the error
   }
 } 
+
+/**
+ * Checks if a week has passed since the last run
+ */
+export function weeklyTrigger(lastRunISO: string): boolean {
+  const last = new Date(lastRunISO);
+  const now = new Date();
+  const diff = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
+  return diff >= 7;
+}

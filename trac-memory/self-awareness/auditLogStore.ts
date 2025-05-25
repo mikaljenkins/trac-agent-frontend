@@ -1,6 +1,6 @@
-import { SelfAuditLogEntry } from './self-audit-log-schema';
 import fs from 'fs';
 import path from 'path';
+import { SelfAuditLogEntry } from './self-audit-log-schema';
 
 const LOG_PATH = path.resolve(process.cwd(), 'dev/audit-log.json');
 

@@ -20,7 +20,21 @@ console.log('=== Symbolic Differ Test ===');
 console.log('Reflection A:', reflectionA);
 console.log('Reflection B:', reflectionB);
 
-const diff = compareWeeklyReflections(reflectionA, reflectionB);
+const diff = compareWeeklyReflections({
+  weekEnding: reflectionA.weekEnding,
+  dominantSymbols: reflectionA.dominantSymbols,
+  archetypeForecast: reflectionA.archetypeForecast,
+  symbolicEntropyLevel: reflectionA.symbolicEntropyLevel,
+  narrative: reflectionA.narrative,
+  summary: reflectionA.narrative
+}, {
+  weekEnding: reflectionB.weekEnding,
+  dominantSymbols: reflectionB.dominantSymbols,
+  archetypeForecast: reflectionB.archetypeForecast,
+  symbolicEntropyLevel: reflectionB.symbolicEntropyLevel,
+  narrative: reflectionB.narrative,
+  summary: reflectionB.narrative
+});
 
 console.log('--- Diff Results ---');
 console.log('Repeated symbols:', diff.repeatedSymbols);

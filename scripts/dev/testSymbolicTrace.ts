@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
-import { processThoughts } from '../../src/internalLogbook/thoughtStream';
-import { dreamDigestor } from '../../src/trac-dreamspace/dreamDigestor';
-import { reflect } from '../../src/system/reflect';
-import { perform, Performance } from '../../src/theatre/perform';
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { processThoughts } from '../src/internalLogbook/thoughtStream.js';
+import { reflect } from '../src/system/reflect.js';
+import { perform } from '../src/theatre/perform.js';
+import { dreamDigestor } from '../src/trac-dreamspace/dreamDigestor.js';
 
 interface SymbolicTrace {
   traceId: string;
@@ -129,4 +129,5 @@ if (require.main === module) {
 }
 
 export { runSymbolicTrace };
-export type { SymbolicTrace }; 
+export type { SymbolicTrace };
+

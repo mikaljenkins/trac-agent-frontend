@@ -1,5 +1,5 @@
-import { invokeLLM } from '@/ai-core/invokeLLM';
-import { SymbolicLLMPrompt } from '@/ai-core/symbolicFrame';
+import { invokeLLM } from '../llm/invokeLLM.js';
+import { SymbolicLLMPrompt } from '../llm/symbolicFrame.js';
 
 export type AnalysisMode = 'stability' | 'archetype' | 'drift';
 
@@ -10,49 +10,73 @@ interface AnalysisResult {
   timestamp: string;
 }
 
-export async function summarizeResonanceState(
-  resonanceData: any,
-  mode: AnalysisMode = 'stability'
-): Promise<AnalysisResult> {
-  const modeConfigs = {
-    stability: {
-      archetype: 'Oracle',
-      prompt: 'Analyze symbolic stability trends and forecast potential shifts',
-      entropyWeight: 0.6,
-    },
-    archetype: {
-      archetype: 'Sage',
-      prompt: 'Assess archetype consistency and evolution patterns',
-      entropyWeight: 0.4,
-    },
-    drift: {
-      archetype: 'Sentinel',
-      prompt: 'Evaluate drift risks and convergence patterns',
-      entropyWeight: 0.8,
-    },
-  };
+interface ResonanceData {
+  symbolicEntropy: number;
+  trustDrift: number;
+  symbolicContext?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+}
 
-  const config = modeConfigs[mode];
+type ModeConfig = {
+  archetype: string;
+  prompt: string;
+  entropyWeight: number;
+};
+
+const modeConfigs: Record<AnalysisMode, ModeConfig> = {
+  stability: {
+    archetype: 'Oracle',
+    prompt: 'Analyze symbolic stability trends and forecast potential shifts',
+    entropyWeight: 0.6,
+  },
+  archetype: {
+    archetype: 'Sage',
+    prompt: 'Assess archetype consistency and evolution patterns',
+    entropyWeight: 0.4,
+  },
+  drift: {
+    archetype: 'Sentinel',
+    prompt: 'Evaluate drift risks and convergence patterns',
+    entropyWeight: 0.8,
+  },
+};
+
+export async function summarizeResonanceState(
+  resonanceData: ResonanceData,
+  mode: AnalysisMode = 'stability',
+  overrideConfig?: Partial<typeof modeConfigs['stability']>
+): Promise<AnalysisResult> {
+  const config = {
+    ...modeConfigs[mode],
+    ...overrideConfig,
+  };
   const entropy = resonanceData?.symbolicEntropy ?? 0.42;
   const trustDrift = resonanceData?.trustDrift ?? 0.18;
 
   const prompt: SymbolicLLMPrompt = {
-    archetype: config.archetype,
-    symbolicState: JSON.stringify({
-      ...resonanceData,
-      mode,
-      entropyWeight: config.entropyWeight,
-    }),
-    entropy,
-    trustDrift,
-    recentInsights: [
-      config.prompt,
-      `Current entropy: ${entropy}`,
-      `Trust drift: ${trustDrift}`,
-    ],
+    systemMessage: `You are acting as the ${config.archetype} archetype.`,
+    symbolicState: {
+      activeArchetype: config.archetype,
+      predictedArchetype: resonanceData.symbolicContext?.predictedArchetype as string | undefined,
+      trustDriftScore: resonanceData.trustDrift,
+      entropy: resonanceData.symbolicEntropy,
+      memoryEcho: resonanceData.symbolicContext?.memoryEcho as string[] | undefined,
+    },
+    entropyNote: `Entropy level: ${entropy.toFixed(2)}`,
   };
 
-  const response = await invokeLLM(prompt);
+  console.debug('[SummarizeResonance] Prompt:', prompt);
+
+  let response;
+  try {
+    response = await invokeLLM(prompt);
+    if (!response || typeof response.text !== 'string') {
+      throw new Error('Invalid LLM response from summarizeResonanceState');
+    }
+  } catch (error) {
+    console.error('[SummarizeResonance] Error:', error);
+    throw new Error(`Resonance summarization failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
   
   // Calculate confidence based on entropy and drift
   const confidence = Math.max(

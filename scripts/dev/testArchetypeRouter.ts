@@ -1,5 +1,4 @@
-import { determineActiveArchetype } from '../../frontend/ai-core/archetypes/archetypeRouter';
-import type { AgentState } from '../../src/system/agentState';
+import type { AgentState } from '../../frontend/ai-core/archetypes/types';
 
 const testStates: AgentState[] = [
   {

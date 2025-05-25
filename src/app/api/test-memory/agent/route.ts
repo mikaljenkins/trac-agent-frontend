@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getTracResponse } from '@/lib/getTracResponse';
 
 export async function POST(request: Request) {
-  const { input } = await request.json();
-  const response = await getTracResponse(input);
+  const data = await request.json();
+  const input = data.input as string;
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    body: JSON.stringify({ input })
+  }).then(res => res.json());
   return NextResponse.json({ response });
 } 
