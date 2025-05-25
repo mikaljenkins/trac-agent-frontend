@@ -6,12 +6,14 @@
  * Compares recent symbolic documentation snapshots with:
  * - Inline diffs for each changed file
  * - Timestamp filtering via CLI flags
+ * - Audit logging for traceability
  */
 
 import { diffLines } from 'diff';
 import fs from 'fs/promises';
 import path from 'path';
 import process from 'process';
+import { logEvent } from '../system/core/loopMonitor';
 
 type Snapshot = {
   timestamp: string;
@@ -55,13 +57,34 @@ async function compareSnapshots(fromTime?: string, toTime?: string) {
   const [latest, previous] = filtered;
   console.log(`\n📊 Comparing snapshots:\n• ${previous.timestamp}\n• ${latest.timestamp}`);
 
+  const changedFiles: string[] = [];
   for (const file of Object.keys(latest.snapshots)) {
     const oldContent = previous.snapshots[file] || '';
     const newContent = latest.snapshots[file] || '';
     if (oldContent !== newContent) {
+      changedFiles.push(file);
       printDiff(file, oldContent, newContent);
     }
   }
+
+  // Log the comparison result
+  await logEvent({
+    timestamp: new Date().toISOString(),
+    handler: 'testDriftCompare',
+    trace: ['symbolic-drift.jsonl'],
+    input: { fromTime, toTime },
+    result: {
+      summary: `Compared symbolic drift snapshots from ${fromTime || 'latest'} to ${toTime || 'latest'}`,
+      symbolicTag: 'drift::manual-inspection'
+    },
+    metadata: { 
+      domain: 'documentation',
+      status: changedFiles.length > 0 ? 'changed' : 'stable',
+      comparisonType: 'inline-diff',
+      filesCompared: Object.keys(latest.snapshots),
+      changedFiles
+    }
+  });
 }
 
 // CLI entry

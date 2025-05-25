@@ -5,6 +5,7 @@ interface LogEventParams {
   timestamp: string;
   handler: string;
   trace?: string[];
+  input?: Record<string, any>;
   result: {
     summary: string;
     symbolicTag: string;
@@ -17,6 +18,9 @@ interface LogEventParams {
     baseline?: string;
     comparison?: string;
     error?: string;
+    comparisonType?: string;
+    filesCompared?: string[];
+    changedFiles?: string[];
   };
 }
 
