@@ -4,7 +4,7 @@ import { validateReadmeAndDocs } from '../maintenance/validateReadmeAndDocs';
 interface LogEventParams {
   timestamp: string;
   handler: string;
-  trace: string[];
+  trace?: string[];
   result: {
     summary: string;
     symbolicTag: string;
@@ -13,6 +13,10 @@ interface LogEventParams {
     domain: string;
     status: string;
     files?: string[];
+    changed?: string[];
+    baseline?: string;
+    comparison?: string;
+    error?: string;
   };
 }
 
@@ -31,7 +35,9 @@ initializeLogs().catch(console.error);
 
 export function logEvent(params: LogEventParams): void {
   console.log(`[${params.timestamp}] ${params.handler}: ${params.result.summary}`);
-  console.log(`Trace: ${params.trace.join(' → ')}`);
+  if (params.trace) {
+    console.log(`Trace: ${params.trace.join(' → ')}`);
+  }
   console.log(`Tag: ${params.result.symbolicTag}`);
   console.log(`Domain: ${params.metadata.domain} (${params.metadata.status})`);
 }

@@ -9,6 +9,7 @@
  */
 
 import { logEvent } from '../core/loopMonitor';
+import { compareRecentDriftSnapshots } from './compareRecentDriftSnapshots';
 import { captureDriftSnapshot } from './symbolicDriftMemory';
 
 export async function validateReadmeAndDocs(): Promise<boolean> {
@@ -16,6 +17,9 @@ export async function validateReadmeAndDocs(): Promise<boolean> {
 
   // Capture drift snapshot
   await captureDriftSnapshot("readme-weekly-check");
+  
+  // Compare with previous snapshot
+  await compareRecentDriftSnapshots();
 
   logEvent({
     timestamp,
