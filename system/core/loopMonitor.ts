@@ -1,3 +1,26 @@
+import { validateReadmeAndDocs } from '../maintenance/validateReadmeAndDocs';
+
+interface LogEventParams {
+  timestamp: string;
+  handler: string;
+  trace: string[];
+  result: {
+    summary: string;
+    symbolicTag: string;
+  };
+  metadata: {
+    domain: string;
+    status: string;
+  };
+}
+
+export function logEvent(params: LogEventParams): void {
+  console.log(`[${params.timestamp}] ${params.handler}: ${params.result.summary}`);
+  console.log(`Trace: ${params.trace.join(' → ')}`);
+  console.log(`Tag: ${params.result.symbolicTag}`);
+  console.log(`Domain: ${params.metadata.domain} (${params.metadata.status})`);
+}
+
 export function weeklyTrigger(lastRunISO: string): boolean {
   const last = new Date(lastRunISO);
   const now = new Date();
@@ -50,6 +73,9 @@ Last Updated: ${new Date().toISOString()}
         console.log('✨ All tasks completed!');
       }
     }
+
+    // Run README validation
+    await validateReadmeAndDocs();
   } catch (error) {
     console.error('❌ Error checking README updates:', error);
   }
