@@ -1,3 +1,4 @@
+import fs from 'fs/promises';
 import { validateReadmeAndDocs } from '../maintenance/validateReadmeAndDocs';
 
 interface LogEventParams {
@@ -11,8 +12,22 @@ interface LogEventParams {
   metadata: {
     domain: string;
     status: string;
+    files?: string[];
   };
 }
+
+// Initialize log files at startup
+async function initializeLogs() {
+  try {
+    await fs.mkdir('logs', { recursive: true });
+    await fs.writeFile('logs/symbolic-drift.jsonl', '', { flag: 'a' });
+  } catch (error) {
+    console.error('❌ Error initializing log files:', error);
+  }
+}
+
+// Call initialization
+initializeLogs().catch(console.error);
 
 export function logEvent(params: LogEventParams): void {
   console.log(`[${params.timestamp}] ${params.handler}: ${params.result.summary}`);

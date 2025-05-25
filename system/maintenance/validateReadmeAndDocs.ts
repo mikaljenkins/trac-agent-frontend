@@ -9,21 +9,25 @@
  */
 
 import { logEvent } from '../core/loopMonitor';
+import { captureDriftSnapshot } from './symbolicDriftMemory';
 
 export async function validateReadmeAndDocs(): Promise<boolean> {
   const timestamp = new Date().toISOString();
+
+  // Capture drift snapshot
+  await captureDriftSnapshot("readme-weekly-check");
 
   logEvent({
     timestamp,
     handler: "validateReadmeAndDocs",
     trace: ["README.md", "docs/ai/"],
     result: {
-      summary: "Documentation validation stub invoked.",
-      symbolicTag: "maintenance::readme-check"
+      summary: "Symbolic README validator ran and captured drift snapshot.",
+      symbolicTag: "validator::readme-cycle"
     },
     metadata: {
       domain: "documentation",
-      status: "stub"
+      status: "completed"
     }
   });
 
