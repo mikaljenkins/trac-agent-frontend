@@ -183,6 +183,8 @@ To add a test:
 
 ## Resources
 
+See [Modular AI Documentation](docs/ai/) for architecture, prompt protocols, and module details.
+
 - [AI Documentation](docs/ai/)
 - [Technical Specifications](docs/specs/)
 - [Task Board](docs/taskboards/)
