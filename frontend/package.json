@@ -1,11 +1,28 @@
 {
   "name": "trac-agent-frontend",
-  "version": "1.0.0",
-  "type": "module",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "node --experimental-modules system/symbolic/runFullSymbolicTest.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "playground": "NODE_ENV=playground next dev",
+    "export:snapshot": "ts-node --project scripts/tsconfig.json scripts/exportSymbolicSnapshot.ts",
+    "check-setup": "ts-node scripts/check-setup.ts"
   },
   "dependencies": {
-    "typescript": "^5.0.0"
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
   }
 } 
