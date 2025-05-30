@@ -1,17 +1,18 @@
+import { MODEL_PATHS, validateModelPaths } from '@/config/model-paths';
 import { spawn } from 'child_process';
 import { NextResponse } from 'next/server';
-import path from 'path';
-
-// Constants for model paths - update these based on your setup
-const MODEL_PATH = path.join(process.cwd(), 'models/mistral/mistral-7b-instruct-v0.1.Q4_K_M.gguf');
-const LLAMA_CLI_PATH = path.join(process.cwd(), 'llama.cpp/build/bin/llama-cli');
 
 export async function POST(req: Request) {
+  // Validate model paths before proceeding
+  if (!validateModelPaths()) {
+    return new NextResponse('Model files not found. Please check configuration.', { status: 500 });
+  }
+
   const { prompt } = await req.json();
 
   return new Promise((resolve) => {
-    const child = spawn(LLAMA_CLI_PATH, [
-      '-m', MODEL_PATH,
+    const child = spawn(MODEL_PATHS.LLAMA_CLI, [
+      '-m', MODEL_PATHS.MISTRAL_MODEL,
       '-p', prompt,
       '-n', '256',
     ]);
