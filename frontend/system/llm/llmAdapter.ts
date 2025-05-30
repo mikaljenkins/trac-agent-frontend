@@ -1,5 +1,4 @@
 import { AgentResult } from '@/types/agent';
-import { LLM_CONFIG } from '../config';
 
 export type SupportedLLM = 'mistral' | 'deepseek';
 
@@ -30,7 +29,10 @@ export async function llmAdapter(model: SupportedLLM, prompt: string): Promise<A
 }
 
 async function callMistral(prompt: string): Promise<string> {
-  const { url } = LLM_CONFIG.mistral;
+  const url = process.env.MISTRAL_API_URL;
+  if (!url) {
+    throw new Error('MISTRAL_API_URL environment variable is not set');
+  }
 
   const res = await fetch(url, {
     method: 'POST',
@@ -45,15 +47,18 @@ async function callMistral(prompt: string): Promise<string> {
   });
 
   if (!res.ok) {
-    throw new Error(`Mistral API error: ${res.statusText}`);
+    throw new Error(`[Error] LLM call failed with status ${res.status}`);
   }
 
   const data = await res.json();
-  return data.response || '[Mistral] No response';
+  return data.response || '[Error] No response returned.';
 }
 
 async function callDeepSeek(prompt: string): Promise<string> {
-  const { url } = LLM_CONFIG.deepseek;
+  const url = process.env.DEEPSEEK_API_URL;
+  if (!url) {
+    throw new Error('DEEPSEEK_API_URL environment variable is not set');
+  }
 
   const res = await fetch(url, {
     method: 'POST',
@@ -68,9 +73,9 @@ async function callDeepSeek(prompt: string): Promise<string> {
   });
 
   if (!res.ok) {
-    throw new Error(`DeepSeek API error: ${res.statusText}`);
+    throw new Error(`[Error] LLM call failed with status ${res.status}`);
   }
 
   const data = await res.json();
-  return data.response || '[DeepSeek] No response';
+  return data.response || '[Error] No response returned.';
 } 
